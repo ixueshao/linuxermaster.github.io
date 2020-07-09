@@ -7,7 +7,7 @@
   xmlns:media="http://search.yahoo.com/mrss/">
   <channel>
     <title>Publications on Hugo Zzo Theme</title>
-    <link>https://devopsman.cn/zh/publication/</link>
+    <link>https://linuxermaster.github.io/zh/publication/</link>
     <description>Recent content in Publications on Hugo Zzo Theme</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
@@ -17,7 +17,7 @@
     <lastBuildDate>Thu, 05 Mar 2020 14:08:48 +0000</lastBuildDate>
     <sy:updatePeriod>hourly</sy:updatePeriod>
     
-        <atom:link href="https://devopsman.cn/zh/publication/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://linuxermaster.github.io/zh/publication/index.xml" rel="self" type="application/rss+xml" />
     
     
     
@@ -25,11 +25,11 @@
       
       <item>
         <title>article</title>
-        <link>https://devopsman.cn/zh/publication/article/</link>
+        <link>https://linuxermaster.github.io/zh/publication/article/</link>
         <pubDate>Thu, 05 Mar 2020 14:08:48 +0000</pubDate>
         <author>marionxue@qq.com (Marionxue)</author>
         <atom:modified>Thu, 05 Mar 2020 14:08:48 +0000</atom:modified>
-        <guid>https://devopsman.cn/zh/publication/article/</guid>
+        <guid>https://linuxermaster.github.io/zh/publication/article/</guid>
         <description></description>
         <content:encoded></content:encoded>
         <dc:creator>Marionxue</dc:creator>
@@ -43,11 +43,11 @@
       
       <item>
         <title>book</title>
-        <link>https://devopsman.cn/zh/publication/book/</link>
+        <link>https://linuxermaster.github.io/zh/publication/book/</link>
         <pubDate>Thu, 05 Mar 2020 14:08:48 +0000</pubDate>
         <author>marionxue@qq.com (Marionxue)</author>
         <atom:modified>Thu, 05 Mar 2020 14:08:48 +0000</atom:modified>
-        <guid>https://devopsman.cn/zh/publication/book/</guid>
+        <guid>https://linuxermaster.github.io/zh/publication/book/</guid>
         <description></description>
         <content:encoded></content:encoded>
         <dc:creator>Marionxue</dc:creator>
@@ -61,11 +61,11 @@
       
       <item>
         <title>misc</title>
-        <link>https://devopsman.cn/zh/publication/misc/</link>
+        <link>https://linuxermaster.github.io/zh/publication/misc/</link>
         <pubDate>Thu, 05 Mar 2020 14:08:48 +0000</pubDate>
         <author>marionxue@qq.com (Marionxue)</author>
         <atom:modified>Thu, 05 Mar 2020 14:08:48 +0000</atom:modified>
-        <guid>https://devopsman.cn/zh/publication/misc/</guid>
+        <guid>https://linuxermaster.github.io/zh/publication/misc/</guid>
         <description></description>
         <content:encoded></content:encoded>
         <dc:creator>Marionxue</dc:creator>

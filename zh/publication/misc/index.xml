@@ -7,7 +7,7 @@
   xmlns:media="http://search.yahoo.com/mrss/">
   <channel>
     <title>misc on Hugo Zzo Theme</title>
-    <link>https://devopsman.cn/zh/publication/misc/</link>
+    <link>https://linuxermaster.github.io/zh/publication/misc/</link>
     <description>Recent content in misc on Hugo Zzo Theme</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
@@ -17,7 +17,7 @@
     <lastBuildDate>Thu, 05 Mar 2020 14:08:48 +0000</lastBuildDate>
     <sy:updatePeriod>hourly</sy:updatePeriod>
     
-        <atom:link href="https://devopsman.cn/zh/publication/misc/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://linuxermaster.github.io/zh/publication/misc/index.xml" rel="self" type="application/rss+xml" />
     
     
     
@@ -25,11 +25,11 @@
       
       <item>
         <title>Book Review: Duis vulputate</title>
-        <link>https://devopsman.cn/zh/publication/misc/misc_any_folder_name_1/</link>
+        <link>https://linuxermaster.github.io/zh/publication/misc/misc_any_folder_name_1/</link>
         <pubDate>Tue, 01 Nov 2016 00:00:00 +0000</pubDate>
         <author>marionxue@qq.com (Marionxue)</author>
         <atom:modified>Tue, 01 Nov 2016 00:00:00 +0000</atom:modified>
-        <guid>https://devopsman.cn/zh/publication/misc/misc_any_folder_name_1/</guid>
+        <guid>https://linuxermaster.github.io/zh/publication/misc/misc_any_folder_name_1/</guid>
         <description></description>
         <content:encoded></content:encoded>
         <dc:creator>Marionxue</dc:creator>
