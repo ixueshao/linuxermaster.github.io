@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" 
+  xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+  xmlns:dc="http://purl.org/dc/elements/1.1/" 
+  xmlns:atom="http://www.w3.org/2005/Atom" 
+  xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" 
+  xmlns:media="http://search.yahoo.com/mrss/">
+  <channel>
+    <title>HTTPS on CloudNativeEcosystem</title>
+    <link>https://linuxermaster.github.io/en/tags/https/</link>
+    <description>Recent content in HTTPS on CloudNativeEcosystem</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <managingEditor>marionxue@qq.com (Marionxue)</managingEditor>
+    <webMaster>marionxue@qq.com (Marionxue)</webMaster>
+    <copyright>[云原生生态圈](https://www.devopsman.cn) &amp;copy;2016-{year}, All Rights Reserved [自由转载-非商用-非衍生-保持署名](https://www.devopsman.cn)</copyright>
+    <lastBuildDate>Tue, 07 Jul 2020 12:00:06 +0900</lastBuildDate>
+    <sy:updatePeriod>hourly</sy:updatePeriod>
+    
+        <atom:link href="https://linuxermaster.github.io/en/tags/https/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+
+      
+      <item>
+        <title>Harbor2.0 安装部署实践(HTTPS)</title>
+        <link>https://linuxermaster.github.io/en/posts/20200707-harbor2.0%E5%B8%A6https%E7%9A%84%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%AE%9E%E8%B7%B5/</link>
+        <pubDate>Tue, 07 Jul 2020 12:00:06 +0900</pubDate>
+        <author>marionxue@qq.com (Marionxue)</author>
+        <atom:modified>Tue, 07 Jul 2020 12:00:06 +0900</atom:modified>
+        <guid>https://linuxermaster.github.io/en/posts/20200707-harbor2.0%E5%B8%A6https%E7%9A%84%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%AE%9E%E8%B7%B5/</guid>
+        <description>Harbor是一个开源的管理 Docker 镜像以及 helm 图表的项目，该项目包括了权限管理、LDAP 认证集成、日志事件审计、管理界面 portal、多 Harbor 实例之间数据同步的公布功能，</description>
+        <content:encoded>&lt;p&gt;&lt;a href=&#34;https://goharbor.io/&#34; title=&#34;Harbor&#34;&gt;Harbor&lt;/a&gt;是一个开源的管理 Docker 镜像以及 helm 图表的项目，该项目包括了权限管理、LDAP 认证集成、日志事件审计、管理界面 portal、多 Harbor 实例之间数据同步的公布功能，同时今年 Harbor 也从 CNCF 中毕业了，提供了更合规、性能更好、操作体验更佳的 2.0 版本，帮助您在跨 kubernetes 和 Docker 等云原生计算平台持续高效的管理制品。&lt;/p&gt;
+&lt;h4 id=&#34;harbor-环境需求&#34;&gt;Harbor 环境需求&lt;/h4&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th align=&#34;left&#34;&gt;Software&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Version&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;Docker engine&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;17.06.0-ce 及以上&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;安装参考: &lt;a href=&#34;https://docs.docker.com/engine/installation/&#34; title=&#34;Docker Engine documentation&#34;&gt;Docker Docs&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;Docker Compose&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1.18.0 版本及以上即可&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;安装参考: &lt;a href=&#34;https://docs.docker.com/compose/install/&#34; title=&#34;Docker Compose documentation&#34;&gt;Docker-Compose Docs&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;Openssl&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;为避免安全漏洞，建议升级到最新&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;可以选择自签证书: &lt;a href=&#34;https://goharbor.io/docs/2.0.0/install-config/configure-https/&#34; title=&#34;Configure HTTPS Access to Harbor&#34;&gt;Config HTTPS&lt;/a&gt;也可以申请个人免费版证书&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h4 id=&#34;harbor-离线安装&#34;&gt;Harbor 离线安装&lt;/h4&gt;
+&lt;p&gt;考虑到网络和测试的需求，我们通过迅雷在 GITHUB 上下载离线安装的 harbor 安装包，其中包含了 Harbor 所需要的基础镜像，离线安装时通过离线安装包内的脚本将导出的镜像文件通过&lt;code&gt;docker load -i&lt;/code&gt;导入到服务器内，然后通过编排软件&lt;code&gt;docker-compose&lt;/code&gt;运行，相当方便。使用到的基础镜像如下:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;goharbor/chartmuseum-photon          v2.0.0              4db8d6aa63e9        &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt; weeks ago         127MB
+goharbor/redis-photon                v2.0.0              c89ea2e53cc0        &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt; weeks ago         72.2MB
+goharbor/trivy-adapter-photon        v2.0.0              6122c52b7e48        &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt; weeks ago         103MB
+goharbor/clair-adapter-photon        v2.0.0              dd2210cb7f53        &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt; weeks ago         62MB
+goharbor/clair-photon        &lt;span class=&#34;m&#34;&gt;2&lt;/span&gt;        v2.0.0              f7c7fcc52278        &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt; weeks ago         171MB
+goharbor/notary-server-photon        v2.0.0              983ac10ed8be        &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt; weeks ago         143MB
+goharbor/notary-signer-photon        v2.0.0              bee1b6d75e0d        &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt; weeks ago         140MB
+goharbor/harbor-registryctl          v2.0.0              c53c32d58d04        &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt; weeks ago         102MB
+goharbor/registry-photon             v2.0.0              afdc1b7ada36        &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt; weeks ago         84.5MB
+goharbor/nginx-photon                v2.0.0              17892f03e56c        &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt; weeks ago         43.6MB
+goharbor/harbor-log                  v2.0.0              5f8ff08e795c        &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt; weeks ago         82MB
+goharbor/harbor-jobservice           v2.0.0              c68a2495bf55        &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt; weeks ago         116MB
+goharbor/harbor-core                 v2.0.0              3aa3af64baf8        &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt; weeks ago         138MB
+goharbor/harbor-portal               v2.0.0              e0b1d3c894c4        &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt; weeks ago         52.4MB
+goharbor/harbor-db                   v2.0.0              5c76f0296cec        &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt; weeks ago         154MB
+goharbor/prepare                     v2.0.0              7266d49995ed        &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt; weeks ago         158MB
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;在安装之前，我们需要修改一下 Harbor 的配置文件，比如修改 harbor 使用的域名、HTTPS 证书的位置等,下面我们简单的说明:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;☸️  k8sdev🔥 default  ~/Downloads  🐳 👉 scp harbor-offline-installer-v2.0.0.tgz root@192.168.99.128:/root/
+&lt;span class=&#34;c1&#34;&gt;# 在192.168.99.128上进行Harbor的安装配置&lt;/span&gt;
+root@master:~# tar xf harbor-offline-installer-v2.0.0.tgz
+root@master:~/harbor# mv harbor.yml.tmpl harbor.yml
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;我们重新命名配置文件 harbor.yml 后，编辑该文件&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;hostname: harbor.devopsman.cn &lt;span class=&#34;c1&#34;&gt;# 配置自己的harbor访问域名&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;如果你需要配置 HTTPS 来访问 harbor,那么需要申请证书或者自己生成的自签证书，这里我们直接在 DNSPOD 上申请一个免费的一年可用的证书&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;images.assets/image-20200707133220228.png&#34; alt=&#34;image-20200707133220228&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;实际上 https 的证书是配置给 harbor 的反向代理 nginx 的，我们一般访问 harbor 其实是访问 nginx 然后将请求转发给 harbor，在我们安装完成 harbor 之后，可以运行以下命令查看到 Nginx 相关的反向代理的配置:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@master:~/harbor# docker &lt;span class=&#34;nb&#34;&gt;exec&lt;/span&gt; -it nginx cat /etc/nginx/nginx.conf
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;接下来，我们需要配置一下 HTTPS 可信证书，首先在 DNSPOD 上下载申请审批成功后的证书&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;images.assets/image-20200707133835126.png&#34; alt=&#34;image-20200707133835126&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;然后解压，将解压后的 Nginx 目录下的两个文件重命名放在/data/cert/目录下&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@master:~/harbor/Nginx# ls -alh
+total 32K
+drwxr-xr-x   &lt;span class=&#34;m&#34;&gt;2&lt;/span&gt; root root 4.0K Jul  &lt;span class=&#34;m&#34;&gt;7&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;2020&lt;/span&gt; .
+drwxr-xr-x &lt;span class=&#34;m&#34;&gt;100&lt;/span&gt; root root  20K Jul  &lt;span class=&#34;m&#34;&gt;7&lt;/span&gt; 01:37 ..
+-rw-r--r--   &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; root root 3.7K Jul  &lt;span class=&#34;m&#34;&gt;7&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;2020&lt;/span&gt; 1_harbor.devopsman.cn_bundle.crt
+-rw-r--r--   &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; root root 1.7K Jul  &lt;span class=&#34;m&#34;&gt;7&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;2020&lt;/span&gt; 2_harbor.devopsman.cn.key
+&lt;span class=&#34;c1&#34;&gt;# 重命名之后放在/data/cert目录下，如果没有这个目录，需要提前创建&lt;/span&gt;
+mkdir -pv /data/cert
+root@master:~/harbor/Nginx# cp 1_harbor.devopsman.cn_bundle.crt /data/cert/harbor.devopsman.cn.crt
+root@master:~/harbor/Nginx# cp 2_harbor.devopsman.cn.key /data/cert/harbor.devopsman.cn.key
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;然后在 harbor.yml 下配置证书的位置即可:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# https related config&lt;/span&gt;
+https:
+  &lt;span class=&#34;c1&#34;&gt;# https port for harbor, default is 443&lt;/span&gt;
+  port: &lt;span class=&#34;m&#34;&gt;443&lt;/span&gt;
+  &lt;span class=&#34;c1&#34;&gt;# The path of cert and key files for nginx&lt;/span&gt;
+  certificate: /data/cert/harbor.devopsman.cn.crt
+  private_key: /data/cert/harbor.devopsman.cn.key
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;配置完证书，使用 prepare 进行配置 nginx 的 https 证书&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; /root/harbor &lt;span class=&#34;c1&#34;&gt;# harbor离线版解压后的文件目录&lt;/span&gt;
+root@master:~/harbor# ./prepare
+prepare base dir is &lt;span class=&#34;nb&#34;&gt;set&lt;/span&gt; to /root/harbor
+...
+Generated configuration file: /compose_location/docker-compose.yml
+Clean up the input dir
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;无果没有报错，然后我们就可以直接使用 docker-compose 运行 harbor 的容器了&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@master:~/harbor# docker-compose up -d
+Creating network &lt;span class=&#34;s2&#34;&gt;&amp;#34;harbor_harbor&amp;#34;&lt;/span&gt; with the default driver
+Creating harbor-log ... &lt;span class=&#34;k&#34;&gt;done&lt;/span&gt;
+Creating harbor-portal ... &lt;span class=&#34;k&#34;&gt;done&lt;/span&gt;
+Creating registry      ... &lt;span class=&#34;k&#34;&gt;done&lt;/span&gt;
+Creating registryctl   ... &lt;span class=&#34;k&#34;&gt;done&lt;/span&gt;
+Creating harbor-db     ... &lt;span class=&#34;k&#34;&gt;done&lt;/span&gt;
+Creating redis         ... &lt;span class=&#34;k&#34;&gt;done&lt;/span&gt;
+Creating harbor-core   ... &lt;span class=&#34;k&#34;&gt;done&lt;/span&gt;
+Creating nginx             ... &lt;span class=&#34;k&#34;&gt;done&lt;/span&gt;
+Creating harbor-jobservice ... &lt;span class=&#34;k&#34;&gt;done&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;安装检测&#34;&gt;安装检测&lt;/h2&gt;
+&lt;p&gt;然后我们可以直接通过 docker login 测试一下&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@master:~/harbor# docker login harbor.devopsman.cn
+Username: admin
+Password:                  &lt;span class=&#34;c1&#34;&gt;# 默认的密码在harbor.yml文件中，可以自行修改&lt;/span&gt;
+WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;通过浏览器查看是否能登录以及证书的有效期&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;images.assets/image-20200707140232427.png&#34; alt=&#34;image-20200707140232427&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;此时我们可以通过推送一个测试的镜像，检查是够正常，我们先在浏览器中访问 harbor.devopsman.cn，然后找到推送命令，查看推送的格式，下面我们测试一下看看结果：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;images.assets/image-20200707134847120.png&#34; alt=&#34;image-20200707134847120&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;我们选择一个 k8s 集群服务基础组件&lt;code&gt;kube-proxy&lt;/code&gt;的镜像，重新打个镜像的 tag，然后推送到我们的&lt;code&gt;devopsman&lt;/code&gt;仓库内:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@master:~/harbor# docker tag k8s.gcr.io/kube-proxy:v1.18.0 harbor.devopsman.cn/devopsman/kube-proxy:v1.18.0
+root@master:~/harbor# docker push harbor.devopsman.cn/devopsman/kube-proxy:v1.18.0
+The push refers to repository &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;harbor.devopsman.cn/devopsman/kube-proxy&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;
+46b37415a80a: Pushed
+0d8d54147a3a: Pushed
+597151d24476: Pushed
+ad9fb2411669: Pushed
+2dc2f2423ad1: Pushed
+682fbb19de80: Pushed
+fc4976bd934b: Pushed
+v1.18.0: digest: sha256:b832454a96a848ad5c51ad8a499ef2173b627ded2c225e3a6be5aad9446cb211 size: &lt;span class=&#34;m&#34;&gt;1786&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;通过查看，确实成功的完成了镜像的上传:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;images.assets/image-20200707135312426.png&#34; alt=&#34;image-20200707135312426&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;这样就完成了 harbor 环境的基础搭建，接下来就好好的体验 Harbor 带来的新功能吧，通过图上看到 harbor2.0 目前支持&lt;code&gt;Dark&lt;/code&gt;主题，helm 推送等，开始动手吧，体验 Harbor 的新功能和特性，本章节就完成了 harbor 的基础探索。&lt;/p&gt;
+</content:encoded>
+        <dc:creator>云原生生态圈</dc:creator>
+        <media:content url="https://linuxermaster.github.ioimages/posts/harbor-syncdata.jpg" medium="image"><media:title type="html">featured image</media:title></media:content>
+        
+        
+        
+          
+            
+              <category>Harbor</category>
+            
+          
+            
+              <category>镜像仓库</category>
+            
+          
+            
+              <category>HTTPS</category>
+            
+          
+            
+              <category>高可用</category>
+            
+          
+        
+        
+        
+      </item>
+      
+
+    
+  </channel>
+</rss>

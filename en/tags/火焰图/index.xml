@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" 
+  xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+  xmlns:dc="http://purl.org/dc/elements/1.1/" 
+  xmlns:atom="http://www.w3.org/2005/Atom" 
+  xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" 
+  xmlns:media="http://search.yahoo.com/mrss/">
+  <channel>
+    <title>火焰🔥图 on CloudNativeEcosystem</title>
+    <link>https://linuxermaster.github.io/en/tags/%E7%81%AB%E7%84%B0%E5%9B%BE/</link>
+    <description>Recent content in 火焰🔥图 on CloudNativeEcosystem</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <managingEditor>marionxue@qq.com (Marionxue)</managingEditor>
+    <webMaster>marionxue@qq.com (Marionxue)</webMaster>
+    <copyright>[云原生生态圈](https://www.devopsman.cn) &amp;copy;2016-{year}, All Rights Reserved [自由转载-非商用-非衍生-保持署名](https://www.devopsman.cn)</copyright>
+    <lastBuildDate>Mon, 16 Dec 2019 12:00:06 +0900</lastBuildDate>
+    <sy:updatePeriod>hourly</sy:updatePeriod>
+    
+        <atom:link href="https://linuxermaster.github.io/en/tags/%E7%81%AB%E7%84%B0%E5%9B%BE/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+
+      
+      <item>
+        <title>🔥图全局视野的Linux性能剖析</title>
+        <link>https://linuxermaster.github.io/en/posts/20200704-%E5%A6%82%E4%BD%95%E7%A1%AE%E5%AE%9Acpu%E6%B6%88%E8%80%97%E5%9C%A8%E5%93%AA%E4%BA%9B%E5%87%BD%E6%95%B0%E4%B8%8A/</link>
+        <pubDate>Mon, 16 Dec 2019 12:00:06 +0900</pubDate>
+        <author>marionxue@qq.com (Marionxue)</author>
+        <atom:modified>Mon, 16 Dec 2019 12:00:06 +0900</atom:modified>
+        <guid>https://linuxermaster.github.io/en/posts/20200704-%E5%A6%82%E4%BD%95%E7%A1%AE%E5%AE%9Acpu%E6%B6%88%E8%80%97%E5%9C%A8%E5%93%AA%E4%BA%9B%E5%87%BD%E6%95%B0%E4%B8%8A/</guid>
+        <description>&lt;p&gt;&lt;img src=&#34;https://linuxermaster.github.io/static/images/posts/image-20200704183558634.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;</description>
+        <content:encoded>&lt;p&gt;&lt;img src=&#34;https://linuxermaster.github.io/static/images/posts/image-20200704183558634.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;h2 id=&#34;文章背景&#34;&gt;文章背景&lt;/h2&gt;
+&lt;p&gt;日常的工作中，会收到一堆CPU使用率过高的告警邮件，遇到某台服务的&lt;code&gt;CPU被占满了&lt;/code&gt;，这时候我们就要去查看是什么进程将服务器的CPU资源占用满了。通常我们会通过&lt;code&gt;top&lt;/code&gt;或者&lt;code&gt;htop&lt;/code&gt;来快速的查看占据CPU最高的那个进程，如下图：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../static/posts/posts/image-20200704183558634.png&#34; alt=&#34;image-20200704183558634&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;这里是通过一个普通的服务器做演示使用，如图所示当前服务器占用CPU最高的是一个叫做&lt;code&gt;kube-apiserver&lt;/code&gt;命令运行的一个进程，该进程的PID为&lt;code&gt;25633&lt;/code&gt;,当然你可能遇到一个服务器上运行有多个服务，想快速知道占用率最高的那几个进程的话，你可以使用以下命令:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;ps aux&lt;span class=&#34;p&#34;&gt;|&lt;/span&gt;head -1&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;ps -aux &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; sort -k3nr &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; head -n &lt;span class=&#34;m&#34;&gt;10&lt;/span&gt; //查看前10个最占用CPU的进程
+ps aux&lt;span class=&#34;p&#34;&gt;|&lt;/span&gt;head -1&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;ps -aux &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; sort -k4nr &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; head -n &lt;span class=&#34;m&#34;&gt;10&lt;/span&gt; //查看前10个最占用内存的进程
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;但是通过以上的方法获取到服务器占用资源的进程之后，还是&lt;code&gt;不知道CPU使用究竟耗时在哪里&lt;/code&gt;,不清楚瓶颈在哪里，此时就可以通过&lt;code&gt;Linux&lt;/code&gt;系统的性能分析工具&lt;code&gt;perf&lt;/code&gt;分析，分析其返回的正在消耗CPU的函数以及调用栈。然后可以通过解析&lt;code&gt;perf&lt;/code&gt;采集的数据，渲染到火焰图🔥，就清楚的知道究竟占用系统CPU资源的罪魁祸首了。&lt;/p&gt;
+&lt;p&gt;在制作火焰图之前，需要先来说说这个Linux性能分析工具&lt;code&gt;perf&lt;/code&gt;,该工具是一个相对简单易上手的性能分析工具，是&lt;code&gt;Performance&lt;/code&gt;单词的缩写，通过其&lt;code&gt;perf&lt;/code&gt;的命令选项完成系统事件的采集到解析，我们来简单的认识一下：&lt;/p&gt;
+&lt;h2 id=&#34;linux上的性能分析工具perf&#34;&gt;linux上的性能分析工具&lt;code&gt;Perf&lt;/code&gt;&lt;/h2&gt;
+&lt;h3 id=&#34;安装perf&#34;&gt;安装&lt;code&gt;perf&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;我目前的服务器发行版是&lt;code&gt;Ubuntu 16.04.6 LTS&lt;/code&gt;因此需要先安装perf才能使用，该工具由&lt;code&gt;linux-tools-common&lt;/code&gt;提供，但是它需要安装后面的依赖。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;c1&#34;&gt;#安装&lt;/span&gt;
+root@master:~# apt install linux-tools-common linux-tools-4.4.0-142-generic linux-cloud-tools-4.4.0-142-generic -y
+
+root@master:~# perf -v &lt;span class=&#34;c1&#34;&gt;#显示perf的版本&lt;/span&gt;
+perf version 4.4.167
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;在安装完成时候，我们就可以对上图CPU使用率最高的进程ID为&lt;code&gt;25633&lt;/code&gt;的进程进行采样分析。&lt;/p&gt;
+&lt;p&gt;首选我们采集一下该进程的&lt;code&gt;调用栈&lt;/code&gt;信息:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@master:~# sudo perf record -F &lt;span class=&#34;m&#34;&gt;99&lt;/span&gt; -p &lt;span class=&#34;m&#34;&gt;25633&lt;/span&gt; -g -- sleep &lt;span class=&#34;m&#34;&gt;30&lt;/span&gt;
+&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt; perf record: Woken up &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;times&lt;/span&gt; to write data &lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;
+&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt; perf record: Captured and wrote 0.039 MB perf.data &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;120&lt;/span&gt; samples&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;这个命令会产生一个大的数据文件，取决与你采集的进程与CPU的配置，如果一台服务器有16个 CPU，每秒抽样99次，持续30秒，就得到 47,520 个调用栈，长达几十万甚至上百万行。上面的命令中，&lt;code&gt;perf record&lt;/code&gt;表示记录，&lt;code&gt;-F 99&lt;/code&gt;表示每秒99次，&lt;code&gt;-p 25633&lt;/code&gt;是进程号，即对哪个进程进行分析，&lt;code&gt;-g&lt;/code&gt;表示记录调用栈，&lt;code&gt;sleep 30&lt;/code&gt;则是持续30秒，参数信息可以视情况调整。生成的数据采集文件在当前目录下，名称为&lt;code&gt;perf.data&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;perf record&lt;/code&gt;命令可以从高到低排列统计每个调用栈出现的百分比，显示结果如下图所示:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@master:~# sudo perf report -n --stdio
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;images.assets/image-20200704190236668.png&#34; alt=&#34;image-20200704190236668&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;这样的效果对使用者来说还是不那么直观易读，这时候，火焰🔥图也就真正的派上用途了。&lt;/p&gt;
+&lt;h2 id=&#34;制作火焰图&#34;&gt;制作火焰🔥图&lt;/h2&gt;
+&lt;p&gt;火焰🔥图并非一定就是火焰系列的颜色主题，只是通过🔥色系更能表达出含义。火焰图常见的类型有 &lt;a href=&#34;http://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html&#34; title=&#34;On-CPU&#34;&gt;On-CPU&lt;/a&gt;, &lt;a href=&#34;http://www.brendangregg.com/FlameGraphs/offcpuflamegraphs.html&#34; title=&#34;Off-CPU&#34;&gt;Off-CPU&lt;/a&gt;, 还有 &lt;a href=&#34;http://www.brendangregg.com/FlameGraphs/memoryflamegraphs.html&#34; title=&#34;Memory&#34;&gt;Memory&lt;/a&gt;, &lt;a href=&#34;http://www.brendangregg.com/FlameGraphs/hotcoldflamegraphs.html&#34; title=&#34;Hot/Cold&#34;&gt;Hot/Cold&lt;/a&gt;, [&lt;code&gt;Differential](http://www.brendangregg.com/blog/2014-11-09/differential-flame-graphs.html &amp;quot;Differential&amp;quot;) 等等. &lt;/code&gt;on-CPU/off-cpu`的区别就是一个是用于CPU是性能瓶颈，一个是IO是性能瓶颈，当你不知道当前的服务器的性能瓶颈究竟是什么的时候，你可以使用这两种类型进行对比，通过两种火焰图的差别是比较大的，如果两张火焰图长得差不多, 那么通常认为CPU被其它进程抢占了.&lt;/p&gt;
+&lt;p&gt;另外一种情况就是如果无法确定当前的系统瓶颈, 可以通过压测工具来确认 : 通过压测工具看看能否让CPU使用率趋于饱和, 如果能那么使用 &lt;code&gt;On-CPU&lt;/code&gt; 火焰图, 如果不管怎么压, CPU 使用率始终上不来, 那么多半说明程序被 &lt;code&gt;IO&lt;/code&gt; 或锁卡住了, 此时适合使用 &lt;code&gt;Off-CPU&lt;/code&gt; 火焰图. 你可以通过压测工具进行测试，目前比较常用的就是&lt;code&gt;ab&lt;/code&gt;和&lt;code&gt;wrk&lt;/code&gt;，我建议尝试使用诸如 &lt;a href=&#34;https://github.com/wg/wrk&#34; title=&#34;wrk&#34;&gt;wrk&lt;/a&gt; 之类更现代的压测工具.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;如果选择 &lt;code&gt;ab&lt;/code&gt; 的话, 那么务必记得开启 &lt;code&gt;-k&lt;/code&gt; 选项, 以避免耗尽系统的可用端口&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Github上有&lt;code&gt;Brendan D. Gregg&lt;/code&gt; 的 &lt;code&gt;Flame Graph&lt;/code&gt; 工程实现了一套生成火焰图的脚本.我们可以直接克隆下来直接用。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; git clone https://github.com/brendangregg/FlameGraph.git
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;生成火焰🔥图，我们一般都遵循以下流程&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;images.assets/image-20200704192051139.png&#34; alt=&#34;image-20200704192051139&#34; /&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;捕获堆栈&lt;/code&gt;: 使用&lt;code&gt;perf&lt;/code&gt;捕捉进程运行堆栈信息&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;折叠堆栈&lt;/code&gt;: 对抓取的系统和程序运行每一时刻的堆栈信息进行分析组合, 将重复的堆栈累计在一起, 从而体现出负载和关键路径，通过&lt;code&gt;stackcollapse&lt;/code&gt;脚本完成&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;生成火焰图&lt;/code&gt;：分析 stackcollapse 输出的堆栈信息渲染成火焰图&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;code&gt;Flame Graph&lt;/code&gt;中提供了抓取不同信息的脚本，可以按需使用。下面我们需要对捕获到的进程堆栈信息&lt;code&gt;perf.data&lt;/code&gt;进行折叠，生成折叠的堆栈信息:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@master:~# perf script -i /root/perf.data &lt;span class=&#34;p&#34;&gt;&amp;amp;&lt;/span&gt;&amp;gt; /root/perf.unfold
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;用 &lt;code&gt;stackcollapse-perf.pl&lt;/code&gt; 将 perf 解析出的内容 &lt;code&gt;perf.unfold&lt;/code&gt; 中的符号进行折叠&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@master:~/FlameGraph# ls
+aix-perf.pl    docs                        example-perf.svg  pkgsplit-perf.pl  stackcollapse-aix.pl       stackcollapse-go.pl               stackcollapse-ljp.awk         stackcollapse-pmc.pl        stackcollapse-vsprof.pl   test.sh
+demos          example-dtrace-stacks.txt   files.pl          range-perf.pl     stackcollapse-bpftrace.pl  stackcollapse-instruments.pl      stackcollapse-perf.pl         stackcollapse-recursive.pl  stackcollapse-vtune.pl
+dev            example-dtrace.svg          flamegraph.pl     README.md         stackcollapse-elfutils.pl  stackcollapse-java-exceptions.pl  stackcollapse-perf-sched.awk  stackcollapse-sample.awk    stackcollapse-xdebug.php
+difffolded.pl  example-perf-stacks.txt.gz  jmaps             record-test.sh    stackcollapse-gdb.pl       stackcollapse-jstack.pl           stackcollapse.pl              stackcollapse-stap.pl       &lt;span class=&#34;nb&#34;&gt;test&lt;/span&gt;
+root@master:~/FlameGraph# ./stackcollapse-perf.pl /root/perf.unfold &lt;span class=&#34;p&#34;&gt;&amp;amp;&lt;/span&gt;&amp;gt; /root/perf.folded
+root@master:~/FlameGraph#
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;最后就是生成火焰🔥图了&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@master:~/FlameGraph# ./flamegraph.pl /root/perf.folded &amp;gt; /root/perf.svg
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;当然也可以通过管道符&lt;code&gt;|&lt;/code&gt;将整个过程简化:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; perf script &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; FlameGraph/stackcollapse-perf.pl &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; FlameGraph/flamegraph.pl &amp;gt; process.svg
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;最后在谷歌浏览器上打开该火焰图:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;images.assets/image-20200704193400492.png&#34; alt=&#34;image-20200704193400492&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;火焰图是基于&lt;code&gt;stack&lt;/code&gt;信息生成的&lt;code&gt;SVG&lt;/code&gt; 图片, 用来展示 CPU 的调用栈。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;y&lt;/code&gt; 轴表示调用栈, 每一层都是一个函数. 调用栈越深, 火焰就越高, 顶部就是正在执行的函数, 下方都是它的父函数.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;x&lt;/code&gt; 轴表示抽样数, 如果一个函数在 x 轴占据的宽度越宽, 就表示它被抽到的次数多, 即执行的时间长. 注意, x 轴不代表时间, 而是所有的调用栈合并后, 按字母顺序排列的.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;火焰图就是看顶层的哪个函数占据的宽度最大. 只要有&lt;code&gt;&amp;quot;平顶&amp;quot;(plateaus)&lt;/code&gt;, 就表示该函数可能存在性能问题。颜色没有特殊含义, 因为火焰图表示的是 CPU 的繁忙程度, 所以一般选择暖色调.&lt;/p&gt;
+&lt;p&gt;当&lt;code&gt;调用栈不完整&lt;/code&gt;调用栈过深时，某些系统只返回前面的一部分（比如前10层）;当&lt;code&gt;函数名缺失&lt;/code&gt;，函数没有名字，编译器只用内存地址来表示（比如匿名函数），所以使用火焰图也是存在分析不到的地方。你也可以通过以下脚本进行采集分析火焰图:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-&gt;:GetherAnalysisData.sh&#34; data-lang=&#34;&gt;:GetherAnalysisData.sh&#34;&gt;&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$#&lt;/span&gt; -ne &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;then&lt;/span&gt;
+	&lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;Usage: &lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$0&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt; seconds&amp;#34;&lt;/span&gt;
+	&lt;span class=&#34;nb&#34;&gt;exit&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;fi&lt;/span&gt;
+perf record -a -g -o perf.data &lt;span class=&#34;p&#34;&gt;&amp;amp;&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;PID&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;`&lt;/span&gt;ps aux&lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; grep &lt;span class=&#34;s2&#34;&gt;&amp;#34;perf record&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; grep -v grep&lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; awk &lt;span class=&#34;s1&#34;&gt;&amp;#39;{print $2}&amp;#39;&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;`&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt; -n &lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$PID&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;then&lt;/span&gt;
+	sleep &lt;span class=&#34;nv&#34;&gt;$1&lt;/span&gt;
+	&lt;span class=&#34;nb&#34;&gt;kill&lt;/span&gt; -s INT &lt;span class=&#34;nv&#34;&gt;$PID&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;fi&lt;/span&gt;
+&lt;span class=&#34;c1&#34;&gt;# wait until perf exite&lt;/span&gt;
+sleep &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;
+
+perf script -i perf.data &lt;span class=&#34;p&#34;&gt;&amp;amp;&lt;/span&gt;&amp;gt; perf.unfold
+perl stackcollapse-perf.pl perf.unfold &lt;span class=&#34;p&#34;&gt;&amp;amp;&lt;/span&gt;&amp;gt; perf.folded
+perl flamegraph.pl perf.folded &amp;gt;perf.svg
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;</content:encoded>
+        <dc:creator>云原生生态圈</dc:creator>
+        <media:content url="https://linuxermaster.github.ioimages/feature1/graph.png" medium="image"><media:title type="html">featured image</media:title></media:content>
+        
+        <media:content url="https://linuxermaster.github.ioimages/posts/image-20200704183558634.png" medium="image"><media:title type="html">meta image</media:title></media:content>
+        
+          
+            
+              <category>火焰🔥图</category>
+            
+          
+            
+              <category>Linux</category>
+            
+          
+            
+              <category>性能分析</category>
+            
+          
+        
+        
+        
+      </item>
+      
+
+    
+  </channel>
+</rss>
