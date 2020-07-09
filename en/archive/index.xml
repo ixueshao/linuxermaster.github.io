@@ -7,7 +7,7 @@
   xmlns:media="http://search.yahoo.com/mrss/">
   <channel>
     <title>Archive on CloudNativeEcosystem</title>
-    <link>https://linuxermaster.github.io/en/archive/</link>
+    <link>https://devopsman.cn/en/archive/</link>
     <description>Recent content in Archive on CloudNativeEcosystem</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
@@ -17,7 +17,7 @@
     <lastBuildDate>Sat, 19 Oct 2019 11:44:14 +0900</lastBuildDate>
     <sy:updatePeriod>hourly</sy:updatePeriod>
     
-        <atom:link href="https://linuxermaster.github.io/en/archive/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://devopsman.cn/en/archive/index.xml" rel="self" type="application/rss+xml" />
     
     
     

@@ -7,7 +7,7 @@
   xmlns:media="http://search.yahoo.com/mrss/">
   <channel>
     <title>Galleries on CloudNativeEcosystem</title>
-    <link>https://linuxermaster.github.io/en/gallery/</link>
+    <link>https://devopsman.cn/en/gallery/</link>
     <description>Recent content in Galleries on CloudNativeEcosystem</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
@@ -17,7 +17,7 @@
     <lastBuildDate>Thu, 31 Oct 2019 10:20:16 +0900</lastBuildDate>
     <sy:updatePeriod>hourly</sy:updatePeriod>
     
-        <atom:link href="https://linuxermaster.github.io/en/gallery/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://devopsman.cn/en/gallery/index.xml" rel="self" type="application/rss+xml" />
     
     
     
@@ -25,16 +25,16 @@
       
       <item>
         <title>Cartoon</title>
-        <link>https://linuxermaster.github.io/en/gallery/cartoon/</link>
+        <link>https://devopsman.cn/en/gallery/cartoon/</link>
         <pubDate>Thu, 31 Oct 2019 10:20:16 +0900</pubDate>
         <author>marionxue@qq.com (Marionxue)</author>
         <atom:modified>Thu, 31 Oct 2019 10:20:16 +0900</atom:modified>
-        <guid>https://linuxermaster.github.io/en/gallery/cartoon/</guid>
+        <guid>https://devopsman.cn/en/gallery/cartoon/</guid>
         <description>Sample images from Pixabay</description>
         <content:encoded>&lt;p&gt;Sample images from &lt;a href=&#34;https://pixabay.com&#34;&gt;Pixabay&lt;/a&gt;&lt;/p&gt;
 </content:encoded>
         <dc:creator>Marionxue</dc:creator>
-        <media:content url="https://linuxermaster.github.ioimages/feature2/bam.png" medium="image"><media:title type="html">featured image</media:title></media:content>
+        <media:content url="https://devopsman.cnimages/feature2/bam.png" medium="image"><media:title type="html">featured image</media:title></media:content>
         
         
         
@@ -44,16 +44,16 @@
       
       <item>
         <title>Photo</title>
-        <link>https://linuxermaster.github.io/en/gallery/photo/</link>
+        <link>https://devopsman.cn/en/gallery/photo/</link>
         <pubDate>Thu, 31 Oct 2019 10:20:16 +0900</pubDate>
         <author>marionxue@qq.com (Marionxue)</author>
         <atom:modified>Thu, 31 Oct 2019 10:20:16 +0900</atom:modified>
-        <guid>https://linuxermaster.github.io/en/gallery/photo/</guid>
+        <guid>https://devopsman.cn/en/gallery/photo/</guid>
         <description>Sample images from Pixabay</description>
         <content:encoded>&lt;p&gt;Sample images from &lt;a href=&#34;https://pixabay.com&#34;&gt;Pixabay&lt;/a&gt;&lt;/p&gt;
 </content:encoded>
         <dc:creator>Marionxue</dc:creator>
-        <media:content url="https://linuxermaster.github.ioimages/feature2/gallery.png" medium="image"><media:title type="html">featured image</media:title></media:content>
+        <media:content url="https://devopsman.cnimages/feature2/gallery.png" medium="image"><media:title type="html">featured image</media:title></media:content>
         
         
         
