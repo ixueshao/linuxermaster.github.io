@@ -320,6 +320,97 @@ v1.18.0: digest: sha256:b832454a96a848ad5c51ad8a499ef2173b627ded2c225e3a6be5aad9
         
       </item>
       
+      <item>
+        <title>Harbor2.0 安装部署实践(HTTPS)</title>
+        <link>https://linuxermaster.github.io/en/posts/20200708-harbor2.0-%E5%A4%9A%E5%AE%9E%E4%BE%8B%E4%B9%8B%E9%97%B4%E9%95%9C%E5%83%8F%E5%A4%8D%E5%88%B6/</link>
+        <pubDate>Tue, 07 Jul 2020 12:00:06 +0900</pubDate>
+        <author>marionxue@qq.com (Marionxue)</author>
+        <atom:modified>Tue, 07 Jul 2020 12:00:06 +0900</atom:modified>
+        <guid>https://linuxermaster.github.io/en/posts/20200708-harbor2.0-%E5%A4%9A%E5%AE%9E%E4%BE%8B%E4%B9%8B%E9%97%B4%E9%95%9C%E5%83%8F%E5%A4%8D%E5%88%B6/</guid>
+        <description>Replication Adapters harbor 提供了 harbor 与非 harbor 服务之间的镜像复制功能，通过复制镜像功能可以将 DockerHub 上的私有镜像给批量的同步到本地，也可以通过在多 Harbor 实例之间进行同步，达到镜像多副本，数据高可用</description>
+        <content:encoded>&lt;h2 id=&#34;replication-adapters&#34;&gt;Replication Adapters&lt;/h2&gt;
+&lt;p&gt;harbor 提供了 harbor 与非 harbor 服务之间的镜像复制功能，通过复制镜像功能可以将 DockerHub 上的私有镜像给批量的同步到本地，也可以通过在多 Harbor 实例之间进行同步，达到镜像多副本，数据高可用的作用。如下图所示，Harbor 支持与 harbor、query.io、Docker-hub 等知名的镜像仓库之间同步，还支持 helm-hub 等 helm 图表之间的同步：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;images.assets/image-20200707214455744.png&#34; alt=&#34;image-20200707214455744&#34; style=&#34;zoom: 50%;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;下面我们通过 harbor 与 harbor 实例之间同步，看一下 Harbor 的镜像复制功能&lt;/p&gt;
+&lt;h2 id=&#34;harbor-to-harbor&#34;&gt;Harbor To Harbor&lt;/h2&gt;
+&lt;p&gt;基于上节&lt;a href=&#34;https://mp.weixin.qq.com/s/ZVsx8sCpCtCE1Qj39NzH7w&#34;&gt;Harbor 开源镜像仓库企业级实践&lt;/a&gt;，安装了域名为&lt;code&gt;harbor.devopsman.cn&lt;/code&gt;的 harbor 实例，根据同样的方式安装一个新的实例，并且配置它的域名为&lt;code&gt;harbor.kubemaster.top&lt;/code&gt;，我们把上一节中推送到 harbor.devopsman.cn 的镜像 devopsman/kube-proxy:v1.18.0 镜像同步到 harbor.kubemaster.top，在准备好这些环境之后，我们开始配置镜像之间的同步。&lt;/p&gt;
+&lt;p&gt;首先在 harbor.kubemaster.top 中新增一个仓库目标，如下图所示，配置好目前镜像仓库的地址、用户名和密码之后，点击测试保存&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;images.assets/image-20200707220812143.png&#34; alt=&#34;image-20200707220812143&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;然后 ，在系统管理下面的复制管理处，新增加一个复制策略，如下图:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;images.assets/image-20200707221007564.png&#34; alt=&#34;image-20200707221007564&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;在源镜像仓库处选择我们之前在仓库管理处配置好的 harbor 实例，然后配置源资源过滤信息，其中的匹配信息如下，其中(Y)表示合法，(N)表示不合法&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th align=&#34;left&#34;&gt;Pattern&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;String(Match or not)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;&lt;code&gt;library/*&lt;/code&gt;&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;&lt;code&gt;library/hello-world&lt;/code&gt;(Y) &lt;code&gt;library/my/hello-world&lt;/code&gt;(N)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;&lt;code&gt;library/**&lt;/code&gt;&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;&lt;code&gt;library/hello-world&lt;/code&gt;(Y) &lt;code&gt;library/my/hello-world&lt;/code&gt;(Y)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;&lt;code&gt;{library,goharbor}/**&lt;/code&gt;&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;&lt;code&gt;library/hello-world&lt;/code&gt;(Y) &lt;code&gt;goharbor/harbor-core&lt;/code&gt;(Y) &lt;code&gt;google/hello-world&lt;/code&gt;(N)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;&lt;code&gt;1.?&lt;/code&gt;&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;&lt;code&gt;1.0&lt;/code&gt;(Y) &lt;code&gt;1.01&lt;/code&gt;(N)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;然后填写自定义的过滤器规则之后，保存。然后在复制管理功能处，找到并选择刚才新建的复制规则，点击复制：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;images.assets/image-20200707221536601.png&#34; alt=&#34;image-20200707221536601&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;这样就手动的触发了复制，其状态为&lt;code&gt;InProgress&lt;/code&gt;，我们点击对应的任务 ID，就能看到更多的复制信息，比如成功状态信息，同步的日志信息等&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;images.assets/image-20200707221736851.png&#34; alt=&#34;image-20200707221736851&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;这样目标私有镜像仓库中的镜像就被同步了过来，同时 harbor 也支持定时任务同步，其根据 cron 的语法规则实现私有镜像仓库之间的镜像的自动同步。&lt;/p&gt;
+&lt;h2 id=&#34;harbor-高可用&#34;&gt;Harbor 高可用&lt;/h2&gt;
+&lt;p&gt;如果想要保证 harbor 实例数据的高可用，可以通过复制管理的功能在多个 harbor 之间互相配置同步策略，可以基于&lt;code&gt;push mode&lt;/code&gt;实现任意一个实例上面推送了镜像，都会被自动的同步到其他的实例上去，结合 cron 的定时任务基本上就自实现了 harbor 的数据高可用，避免因单实例造成数据无法挽回。&lt;/p&gt;
+&lt;h4 id=&#34;精彩文章回顾&#34;&gt;精彩文章回顾&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://mp.weixin.qq.com/s/ZVsx8sCpCtCE1Qj39NzH7w&#34;&gt;Harbor 开源镜像仓库企业级实现&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://mp.weixin.qq.com/s/_eiiCG-jjIuc0JZKWLXd0A&#34;&gt;阿里云出品·Kubernetes 深入浅出实践 v1.0&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://mp.weixin.qq.com/s/Barv9VtraIAWrUkHZFVwpg&#34;&gt;微软出品·Kubernetes 最新学习指南 v3.0&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://mp.weixin.qq.com/s/VSvsLAb-QEZ7_syDPItyLA&#34;&gt;火焰图：全局视野的 Linux 性能剖析 &lt;code&gt;1k+&lt;/code&gt;在读&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://mp.weixin.qq.com/s/R5JI3vE995_vfxtYkbQYrA&#34;&gt;最流行的五款 Kubernetes 交互式可视化工具 &lt;code&gt;900+&lt;/code&gt;在读&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://mp.weixin.qq.com/s/3JIPe9pIbxdN7tGmLtX5ng&#34;&gt;轻松爬取拉勾网岗位招聘信息 &lt;code&gt;600+&lt;/code&gt;在读&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://mp.weixin.qq.com/s/eycZx7JtLGXy0mkZ1_V2nQ&#34;&gt;Yearning - 最 Popular 的 MYSQL 审计平台 &lt;code&gt;700+&lt;/code&gt;在读&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://mp.weixin.qq.com/s/TZzsHM1YbUHot6BGRqSzlg&#34;&gt;Prometheus 监控系列-部署篇 &lt;code&gt;500+&lt;/code&gt;在读&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content:encoded>
+        <dc:creator>云原生生态圈</dc:creator>
+        <media:content url="https://linuxermaster.github.ioimages/posts/harbor-syncdata.jpg" medium="image"><media:title type="html">featured image</media:title></media:content>
+        
+        
+        
+          
+            
+              <category>Harbor</category>
+            
+          
+            
+              <category>镜像仓库</category>
+            
+          
+            
+              <category>HTTPS</category>
+            
+          
+            
+              <category>高可用</category>
+            
+          
+        
+        
+        
+      </item>
+      
 
     
   </channel>
