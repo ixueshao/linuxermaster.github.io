@@ -98,6 +98,31 @@
   </url>
   
   <url>
+    <loc>https://linuxermaster.github.io/en/tags/ab/</loc>
+    <lastmod>2020-05-30T12:00:06+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://linuxermaster.github.io/en/posts/20200530-ab%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95%E6%A8%A1%E6%8B%9F%E5%AE%9E%E7%8E%B0kubernetes-pod%E6%B0%B4%E5%B9%B3%E8%87%AA%E5%8A%A8%E4%BC%B8%E7%BC%A9/</loc>
+    <lastmod>2020-05-30T12:00:06+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://linuxermaster.github.io/en/tags/hpa/</loc>
+    <lastmod>2020-05-30T12:00:06+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://linuxermaster.github.io/en/tags/kubernetes/</loc>
+    <lastmod>2020-05-30T12:00:06+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://linuxermaster.github.io/en/tags/%E5%8E%8B%E6%B5%8B%E6%B5%8B%E8%AF%95/</loc>
+    <lastmod>2020-05-30T12:00:06+09:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://linuxermaster.github.io/en/publication/article/</loc>
     <lastmod>2020-03-05T14:08:48+00:00</lastmod>
     <xhtml:link
@@ -380,10 +405,6 @@
                 hreflang="en"
                 href="https://linuxermaster.github.io/en/publication/misc/misc_any_folder_name_1/"
                 />
-  </url>
-  
-  <url>
-    <loc>https://linuxermaster.github.io/en/posts/20200530-ab%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95%E6%A8%A1%E6%8B%9F%E5%AE%9E%E7%8E%B0kubernetes-pod%E6%B0%B4%E5%B9%B3%E8%87%AA%E5%8A%A8%E4%BC%B8%E7%BC%A9/</loc>
   </url>
   
   <url>
