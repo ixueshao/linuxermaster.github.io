@@ -700,13 +700,13 @@ dp-tomcat-96b7b9f6f-zztqm      1/1     Running             &lt;span class=&#34;m
       </item>
       
       <item>
-        <title></title>
+        <title>技术人员最常用的命令行工具</title>
         <link>https://linuxermaster.github.io/en/posts/20200531-%E6%8A%80%E6%9C%AF%E4%BA%BA%E5%91%98%E6%9C%80%E5%B8%B8%E7%94%A8%E7%9A%84%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7/</link>
-        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        <pubDate>Sat, 30 May 2020 12:00:06 +0900</pubDate>
         <author>marionxue@qq.com (Marionxue)</author>
-        
+        <atom:modified>Sat, 30 May 2020 12:00:06 +0900</atom:modified>
         <guid>https://linuxermaster.github.io/en/posts/20200531-%E6%8A%80%E6%9C%AF%E4%BA%BA%E5%91%98%E6%9C%80%E5%B8%B8%E7%94%A8%E7%9A%84%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7/</guid>
-        <description>autojump autojump 是一款非常方便的命令行下的目录跳转工具，它能帮你快速从目录访问的历史记录中统计出各个目录的访问频次和权重，这样，就能方便的让你在各个目录中迅速跳转了。只要你</description>
+        <description></description>
         <content:encoded>&lt;h4 id=&#34;autojump&#34;&gt;autojump&lt;/h4&gt;
 &lt;p&gt;&lt;img src=&#34;images.assets/autojump.svg&#34; alt=&#34;Github stars&#34; /&gt;&lt;img alt=&#34;GitHub watchers&#34; src=&#34;https://img.shields.io/github/watchers/wting/autojump?label=watch&amp;logoColor=red&amp;style=social&#34;&gt;&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;autojump&lt;/code&gt; 是一款非常方便的命令行下的目录跳转工具，它能帮你快速从目录访问的历史记录中统计出各个目录的访问频次和权重，这样，就能方便的让你在各个目录中迅速跳转了。只要你记得之前某个访问过的目录的大概名字，配合 autojump，就能快速的跳转过去，再也不用打一长串的 &lt;code&gt;cd&lt;/code&gt; 命令了。使用方式如下：&lt;/p&gt;
@@ -803,7 +803,7 @@ dp-tomcat-96b7b9f6f-zztqm      1/1     Running             &lt;span class=&#34;m
 &lt;p&gt;命令行打错了以后，打一个&lt;code&gt;fuck&lt;/code&gt;就会自动纠正。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;images.assets/example.gif&#34; alt=&#34;gif with examples&#34; /&gt;&lt;/p&gt;
 &lt;h4 id=&#34;shellcheckhttpsgithubcomkoalamanshellcheck&#34;&gt;&lt;a href=&#34;https://github.com/koalaman/shellcheck&#34;&gt;shellcheck&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;ShellCheck，用于Shell脚本的静态分析工具，在网页上检查你的脚本：https://www.shellcheck.net/ ,shellcheck具体会检查一些什么问题呢，以下给出一个不完整的问题检查列表&lt;/p&gt;
+&lt;p&gt;ShellCheck，用于 Shell 脚本的静态分析工具，在网页上检查你的脚本：https://www.shellcheck.net/ ,shellcheck 具体会检查一些什么问题呢，以下给出一个不完整的问题检查列表&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;引号问题&lt;/li&gt;
 &lt;li&gt;条件判断 ShellCheck 可以识别大多数不正确的条件判断语句&lt;/li&gt;
@@ -811,19 +811,28 @@ dp-tomcat-96b7b9f6f-zztqm      1/1     Running             &lt;span class=&#34;m
 &lt;li&gt;ShellCheck 识别很多初学者的语法错误&lt;/li&gt;
 &lt;li&gt;ShellCheck 可以提出一些风格改进建议&lt;/li&gt;
 &lt;li&gt;ShellCheck 可以识别一些数据和拼写错误&lt;/li&gt;
-&lt;li&gt;ShellCheck可以做出一些增强脚本鲁棒性的建议&lt;/li&gt;
+&lt;li&gt;ShellCheck 可以做出一些增强脚本鲁棒性的建议&lt;/li&gt;
 &lt;li&gt;ShellCheck 警告你使用了 shebang 不支持的特性.&lt;/li&gt;
 &lt;li&gt;ShellCheck 可以识别到一些其他问题&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;img src=&#34;images.assets/image-20200601190404241.png&#34; alt=&#34;image-20200601190404241&#34; /&gt;&lt;/p&gt;
 &lt;h3 id=&#34;glances&#34;&gt;glances&lt;/h3&gt;
 &lt;p&gt;top/htop`的替代方案，官网地址:https://nicolargo.github.io/glances/&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;images.assets/screenshot-wide.png&#34; alt=&#34;img&#34; /&gt;&lt;/p&gt;
-</content:encoded>
-        <dc:creator>Marionxue</dc:creator>
+&lt;p&gt;&lt;img src=&#34;images.assets/screenshot-wide.png&#34; alt=&#34;img&#34; /&gt;&lt;/p&gt;</content:encoded>
+        <dc:creator>云原生生态圈</dc:creator>
+        <media:content url="https://linuxermaster.github.ioimages/posts/harbor-syncdata.jpg" medium="image"><media:title type="html">featured image</media:title></media:content>
         
         
         
+          
+            
+              <category>Termianl</category>
+            
+          
+            
+              <category>工具</category>
+            
+          
         
         
         
