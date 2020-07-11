@@ -14,7 +14,7 @@
     <managingEditor>marionxue@qq.com (Marionxue)</managingEditor>
     <webMaster>marionxue@qq.com (Marionxue)</webMaster>
     <copyright>[云原生生态圈](https://www.devopsman.cn) &amp;copy;2016-{year}, All Rights Reserved [自由转载-非商用-非衍生-保持署名](https://www.devopsman.cn)</copyright>
-    <lastBuildDate>Tue, 07 Jul 2020 12:00:06 +0900</lastBuildDate>
+    <lastBuildDate>Sat, 11 Jul 2020 23:00:06 +0900</lastBuildDate>
     <sy:updatePeriod>hourly</sy:updatePeriod>
     
         <atom:link href="https://linuxermaster.github.io/en/posts/index.xml" rel="self" type="application/rss+xml" />
@@ -22,6 +22,200 @@
     
     
 
+      
+      <item>
+        <title>Nginx专辑- 01 Nginx1.18编译安装</title>
+        <link>https://linuxermaster.github.io/en/posts/20200711-nginx%E4%B8%93%E8%BE%91-01-nginx1.18%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85/</link>
+        <pubDate>Sat, 11 Jul 2020 23:00:06 +0900</pubDate>
+        <author>marionxue@qq.com (Marionxue)</author>
+        <atom:modified>Sat, 11 Jul 2020 23:00:06 +0900</atom:modified>
+        <guid>https://linuxermaster.github.io/en/posts/20200711-nginx%E4%B8%93%E8%BE%91-01-nginx1.18%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85/</guid>
+        <description>Nginx 编译安装的前期准备 Nginx 的编译安装一般用于需要加入一些扩展的第三方模块或者自研发的扩展功能包，所以在编译之前需要提前下载准备好这些扩展的包文件，比如我们编译的时候</description>
+        <content:encoded>&lt;h2 id=&#34;nginx-编译安装的前期准备&#34;&gt;Nginx 编译安装的前期准备&lt;/h2&gt;
+&lt;p&gt;Nginx 的编译安装一般用于需要加入一些扩展的第三方模块或者自研发的扩展功能包，所以在编译之前需要提前下载准备好这些扩展的包文件，比如我们编译的时候增加需要使用&lt;code&gt;jemalloc&lt;/code&gt;优化 nginx 内存，使用&lt;code&gt;openssl&lt;/code&gt;实现 nginx 的 https 数据加密，使用&lt;code&gt;zlib&lt;/code&gt;库扩展 nginx 压缩的功能等，下面我们下载一些我们需要的基础依赖库的包文件:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; /usr/local/src
+wget http://nginx.org/download/nginx-1.14.2.tar.gz
+wget http://nginx.org/download/nginx-1.10.3.tar.gz
+wget https://www.zlib.net/fossils/zlib-1.2.8.tar.gz
+wget https://openssl.org/source/openssl-1.0.2d.tar.gz
+wget https://github.com/simplresty/ngx_devel_kit/archive/v0.3.0.tar.gz -O ngx_devel_kit.tar.gz
+wget https://github.com/jemalloc/jemalloc/releases/download/4.5.0/jemalloc-4.5.0.tar.bz2
+wget https://github.com/yaoweibin/nginx_upstream_check_module/archive/v0.3.0.tar.gz -O nginx_upstream_check_module.tar.gz
+wget https://github.com/openresty/lua-nginx-module/archive/v0.10.10.tar.gz -O lua-nginx-module.tar.gz
+tar xf jemalloc-4.5.0.tar.bz2
+&lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; jemalloc-4.5.0 &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; ./configure &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; make &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; make install
+apt-get install -y  lua5.1-0-dev
+sudo apt-get install libpcre3 libpcre3-dev &lt;span class=&#34;c1&#34;&gt;# support pcre&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;jemalloc&lt;/code&gt;的安装也可以直接使用&lt;code&gt;apt&lt;/code&gt;安装&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;apt-get install -y libjemalloc-dev
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;如果在编译的过程中出现一些下面类似的错误，可以通过安装开发者工具包解决这个问题:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;checking &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; xsltproc... &lt;span class=&#34;nb&#34;&gt;false&lt;/span&gt;
+checking &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; gcc... no
+checking &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; cc... no
+checking &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; cl.exe... no
+
+&lt;span class=&#34;c1&#34;&gt;# ubuntu上安装开发者工具包&lt;/span&gt;
+sudo apt install build-essential -y
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;编译安装-nginx1180&#34;&gt;编译安装 Nginx1.18.0&lt;/h2&gt;
+&lt;p&gt;首先我们准备一个 nginx 的运行用户&lt;code&gt;www&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;groupadd www &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; useradd www -g www
+&lt;span class=&#34;c1&#34;&gt;# 开始编译nginx&lt;/span&gt;
+./configure --prefix&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/webserver/nginx18 --user&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;www --group&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;www --with-pcre --with-zlib&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/root/workspace/packages/nginx/zlib-1.2.8 --with-openssl&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/root/workspace/packages/nginx/openssl-1.0.2d --with-http_gzip_static_module --with-http_realip_module --with-http_stub_status_module --add-module&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/root/workspace/packages/nginx/ngx_devel_kit-0.3.0 --with-ld-opt&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;-ljemalloc --with-stream --with-http_ssl_module --add-module&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/root/workspace/packages/nginx/nginx_upstream_check_module-0.3.0 &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; make &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; make install
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;编译完成后，在启动 nginx&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;/webserver/nginx18/sbin/nginx
+&lt;span class=&#34;c1&#34;&gt;# 然后我们将nginx的work进程设置为2个，修改用户为www&lt;/span&gt;
+root@master:/webserver/nginx18/sbin# ps -fe &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt;grep nginx
+root      &lt;span class=&#34;m&#34;&gt;50131&lt;/span&gt;      &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 08:43 ?        00:00:00 nginx: master process ./nginx
+www       &lt;span class=&#34;m&#34;&gt;58005&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;50131&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 08:54 ?        00:00:00 nginx: worker process
+www       &lt;span class=&#34;m&#34;&gt;58006&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;50131&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 08:54 ?        00:00:00 nginx: worker process
+
+root@master:/webserver/nginx18/sbin# cp nginx /usr/local/bin/nginx
+root@master:/webserver/nginx18/sbin# nginx -t
+root@master:/webserver/nginx18/sbin# nginx -s reload
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;然后我们配置一个&lt;code&gt;web.devopsman.cn&lt;/code&gt;的域名到&lt;code&gt;192.168.99.128&lt;/code&gt;上，看一下服务运行和 DNS 解析后的效果:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@master:~/workspace/packages/nginx/nginx-1.18.0/contrib# curl -I web.devopsman.cn
+HTTP/1.1 &lt;span class=&#34;m&#34;&gt;200&lt;/span&gt; OK
+Server: nginx/1.18.0
+Date: Sat, &lt;span class=&#34;m&#34;&gt;11&lt;/span&gt; Jul &lt;span class=&#34;m&#34;&gt;2020&lt;/span&gt; 13:03:29 GMT
+Content-Type: text/html
+Content-Length: &lt;span class=&#34;m&#34;&gt;612&lt;/span&gt;
+Last-Modified: Sat, &lt;span class=&#34;m&#34;&gt;11&lt;/span&gt; Jul &lt;span class=&#34;m&#34;&gt;2020&lt;/span&gt; 12:38:29 GMT
+Connection: keep-alive
+ETag: &lt;span class=&#34;s2&#34;&gt;&amp;#34;5f09b2c5-264&amp;#34;&lt;/span&gt;
+Accept-Ranges: bytes
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;高亮-nginx-的配置&#34;&gt;高亮 Nginx 的配置&lt;/h2&gt;
+&lt;p&gt;nginx 的源码包里面有配置 vim 编辑的 nginx 配置文件时内容格式高亮显示的配置文件，直接将其拷贝到&lt;code&gt;.vim&lt;/code&gt;目录下即可&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@master:~# &lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; /root/workspace/packages/nginx/nginx-1.18.0/contrib/
+root@master:~/workspace/packages/nginx/nginx-1.18.0/contrib# ls -al
+total &lt;span class=&#34;m&#34;&gt;24&lt;/span&gt;
+drwxr-xr-x &lt;span class=&#34;m&#34;&gt;4&lt;/span&gt; www www &lt;span class=&#34;m&#34;&gt;4096&lt;/span&gt; Jul &lt;span class=&#34;m&#34;&gt;11&lt;/span&gt; 08:02 .
+drwxr-xr-x &lt;span class=&#34;m&#34;&gt;9&lt;/span&gt; www www &lt;span class=&#34;m&#34;&gt;4096&lt;/span&gt; Jul &lt;span class=&#34;m&#34;&gt;11&lt;/span&gt; 08:21 ..
+-rw-r--r-- &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; www www &lt;span class=&#34;m&#34;&gt;1272&lt;/span&gt; Apr &lt;span class=&#34;m&#34;&gt;21&lt;/span&gt; 10:09 geo2nginx.pl
+-rw-r--r-- &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; www www  &lt;span class=&#34;m&#34;&gt;543&lt;/span&gt; Apr &lt;span class=&#34;m&#34;&gt;21&lt;/span&gt; 10:09 README
+drwxr-xr-x &lt;span class=&#34;m&#34;&gt;2&lt;/span&gt; www www &lt;span class=&#34;m&#34;&gt;4096&lt;/span&gt; Jul &lt;span class=&#34;m&#34;&gt;11&lt;/span&gt; 08:02 unicode2nginx
+drwxr-xr-x &lt;span class=&#34;m&#34;&gt;6&lt;/span&gt; www www &lt;span class=&#34;m&#34;&gt;4096&lt;/span&gt; Apr &lt;span class=&#34;m&#34;&gt;21&lt;/span&gt; 10:09 vim
+root@master:~/workspace/packages/nginx/nginx-1.18.0/contrib# cp -r vim/* ~/.vim/
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;拷贝进去之后，我们发现编辑 nginx 的配置文件变得高亮了&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;images.assets/image-20200711210137505.png&#34; alt=&#34;image-20200711210137505&#34; /&gt;&lt;/p&gt;
+</content:encoded>
+        <dc:creator>云原生生态圈</dc:creator>
+        <media:content url="https://linuxermaster.github.ioimages/posts/harbor-syncdata.jpg" medium="image"><media:title type="html">featured image</media:title></media:content>
+        
+        
+        
+          
+            
+              <category>Nginx</category>
+            
+          
+            
+              <category>编译</category>
+            
+          
+            
+              <category>web server</category>
+            
+          
+        
+        
+        
+      </item>
       
       <item>
         <title>Harbor2.0 安装部署实践(HTTPS)</title>
@@ -4477,6 +4671,46 @@ perl flamegraph.pl perf.folded &amp;gt;perf.svg
         <guid>https://linuxermaster.github.io/en/posts/20200709-kubernetes-envoy%E5%AE%9E%E8%B7%B5/</guid>
         <description></description>
         <content:encoded></content:encoded>
+        <dc:creator>Marionxue</dc:creator>
+        
+        
+        
+        
+        
+        
+      </item>
+      
+      <item>
+        <title></title>
+        <link>https://linuxermaster.github.io/en/posts/20200710-%E8%BF%90%E7%BB%B4%E7%9A%84%E7%9F%A5%E8%AF%86%E9%9D%A2%E7%A9%B6%E7%AB%9F%E6%9C%89%E5%A4%9A%E5%A4%A7/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        <author>marionxue@qq.com (Marionxue)</author>
+        
+        <guid>https://linuxermaster.github.io/en/posts/20200710-%E8%BF%90%E7%BB%B4%E7%9A%84%E7%9F%A5%E8%AF%86%E9%9D%A2%E7%A9%B6%E7%AB%9F%E6%9C%89%E5%A4%9A%E5%A4%A7/</guid>
+        <description>前段时间，发现新运维社区的赵班长(赵舜东)更新了一版《运维知识体系 v3.1》其中新增了一些目前比较火的、成熟的运维解决方案，也包括容器编排，微服务框架lstio</description>
+        <content:encoded>&lt;p&gt;前段时间，发现新运维社区的&lt;strong&gt;赵班长&lt;/strong&gt;&lt;code&gt;(赵舜东)&lt;/code&gt;更新了一版《运维知识体系 v3.1》其中新增了一些目前比较火的、成熟的运维解决方案，也包括容器编排，微服务框架lstio等。分层的归类总结各个层次常用的开源软件以及服务组合解决方案，其中包括客户端层、外部层、网络层、接入层、应用服务层、存储层、基础服务层、容器层、操作系统层、基础设施层等，以及技术在运维、运维自动化成长方向的发展以及迭代的趋势，这里贴出&lt;strong&gt;运维知识体系-v3.1&lt;/strong&gt;以及&lt;strong&gt;Web缓存知识体系-V3.0&lt;/strong&gt;供大家学习参考。&lt;/p&gt;
+&lt;h3 id=&#34;运维知识体系-v31&#34;&gt;&lt;strong&gt;运维知识体系-v3.1&lt;/strong&gt;&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&#34;images.assets/WX20200710-225543@2x.png&#34; alt=&#34;WX20200710-225543@2x&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;images.assets/WX20200710-224803@2x-2.png&#34; alt=&#34;WX20200710-224803@2x-2&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;images.assets/WX20200710-224832@2x-3.png&#34; alt=&#34;WX20200710-224832@2x-3&#34; /&gt;&lt;/p&gt;
+&lt;h3 id=&#34;web缓存知识体系-v30&#34;&gt;&lt;strong&gt;Web缓存知识体系-V3.0&lt;/strong&gt;&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&#34;images.assets/WX20200710-224931@2x.png&#34; alt=&#34;WX20200710-224931@2x&#34; /&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;图片素材来源: &lt;a href=&#34;https://www.unixhot.com/&#34;&gt;https://www.unixhot.com/&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&#34;精彩文章回顾&#34;&gt;精彩文章回顾&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://mp.weixin.qq.com/s/4djVWmsTmH3sJ1u0l-GP4Q&#34;&gt;Jenkinsh专辑|解决Jenkins安装的疑难杂症&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://mp.weixin.qq.com/s/ZVsx8sCpCtCE1Qj39NzH7w&#34;&gt;Harbor2.0开源镜像仓库企业级实现&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://mp.weixwin.qq.com/s/m6NRKOxOYAoZL34yzXhO2g&#34;&gt;Harbor2.0配置高可用的Harbor镜像仓库&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://mp.weixin.qq.com/s/_eiiCG-jjIuc0JZKWLXd0A&#34;&gt;阿里云出品·Kubernetes 深入浅出实践 v1.0&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://mp.weixin.qq.com/s/Barv9VtraIAWrUkHZFVwpg&#34;&gt;微软出品·Kubernetes 最新学习指南 v3.0&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://mp.weixin.qq.com/s/VSvsLAb-QEZ7_syDPItyLA&#34;&gt;火焰图：全局视野的 Linux 性能剖析 &lt;code&gt;1k+&lt;/code&gt;在读&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://mp.weixin.qq.com/s/R5JI3vE995_vfxtYkbQYrA&#34;&gt;最流行的五款 Kubernetes 交互式可视化工具 &lt;code&gt;900+&lt;/code&gt;在读&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://mp.weixin.qq.com/s/3JIPe9pIbxdN7tGmLtX5ng&#34;&gt;轻松爬取拉勾网岗位招聘信息 &lt;code&gt;600+&lt;/code&gt;在读&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://mp.weixin.qq.com/s/eycZx7JtLGXy0mkZ1_V2nQ&#34;&gt;Yearning - 最 Popular 的 MYSQL 审计平台 &lt;code&gt;700+&lt;/code&gt;在读&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content:encoded>
         <dc:creator>Marionxue</dc:creator>
         
         
@@ -9030,6 +9264,694 @@ Q5TDBFRaOTyRgUxYt+PKv01S9tTiHgkxHoBzPQF7Z2TuRNKXoVQeXiUzW/s&lt;span class=&#34;o
         <guid>https://linuxermaster.github.io/en/posts/nginx%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97%E4%B8%93%E8%BE%91/01-nginx%E4%BD%BF%E7%94%A8%E7%9A%84%E5%9C%BA%E6%99%AF%E4%BB%A5%E5%8F%8A%E4%BC%98%E7%82%B9/</guid>
         <description></description>
         <content:encoded></content:encoded>
+        <dc:creator>Marionxue</dc:creator>
+        
+        
+        
+        
+        
+        
+      </item>
+      
+      <item>
+        <title></title>
+        <link>https://linuxermaster.github.io/en/posts/nginx%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97%E4%B8%93%E8%BE%91/02-nginx1.18.0%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        <author>marionxue@qq.com (Marionxue)</author>
+        
+        <guid>https://linuxermaster.github.io/en/posts/nginx%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97%E4%B8%93%E8%BE%91/02-nginx1.18.0%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85/</guid>
+        <description>Nginx编译安装的前期准备 Nginx的编译安装一般用于需要加入一些扩展的第三方模块或者自研发的扩展功能包，所以在编译之前需要提前下载准备好这些扩展的包文件，比</description>
+        <content:encoded>&lt;h2 id=&#34;nginx编译安装的前期准备&#34;&gt;Nginx编译安装的前期准备&lt;/h2&gt;
+&lt;p&gt;Nginx的编译安装一般用于需要加入一些扩展的第三方模块或者自研发的扩展功能包，所以在编译之前需要提前下载准备好这些扩展的包文件，比如我们编译的时候增加需要使用&lt;code&gt;jemalloc&lt;/code&gt;优化nginx内存，使用&lt;code&gt;openssl&lt;/code&gt;实现nginx的https数据加密，使用&lt;code&gt;zlib&lt;/code&gt;库扩展nginx压缩的功能等，下面我们下载一些我们需要的基础依赖库的包文件:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; /usr/local/src
+wget http://nginx.org/download/nginx-1.14.2.tar.gz
+wget http://nginx.org/download/nginx-1.10.3.tar.gz
+wget https://www.zlib.net/fossils/zlib-1.2.8.tar.gz
+wget https://openssl.org/source/openssl-1.0.2d.tar.gz
+wget https://github.com/simplresty/ngx_devel_kit/archive/v0.3.0.tar.gz -O ngx_devel_kit.tar.gz
+wget https://github.com/jemalloc/jemalloc/releases/download/4.5.0/jemalloc-4.5.0.tar.bz2
+wget https://github.com/yaoweibin/nginx_upstream_check_module/archive/v0.3.0.tar.gz -O nginx_upstream_check_module.tar.gz
+wget https://github.com/openresty/lua-nginx-module/archive/v0.10.10.tar.gz -O lua-nginx-module.tar.gz
+tar xf jemalloc-4.5.0.tar.bz2
+&lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; jemalloc-4.5.0 &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; ./configure &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; make &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; make install
+apt-get install -y  lua5.1-0-dev
+sudo apt-get install libpcre3 libpcre3-dev &lt;span class=&#34;c1&#34;&gt;# support pcre&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;jemalloc&lt;/code&gt;的安装也可以直接使用&lt;code&gt;apt&lt;/code&gt;安装&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;apt-get install -y libjemalloc-dev
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;如果在编译的过程中出现一些下面类似的错误，可以通过安装开发者工具包解决这个问题:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;checking &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; xsltproc... &lt;span class=&#34;nb&#34;&gt;false&lt;/span&gt;
+checking &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; gcc... no
+checking &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; cc... no
+checking &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; cl.exe... no
+
+&lt;span class=&#34;c1&#34;&gt;# ubuntu上安装开发者工具包&lt;/span&gt;
+sudo apt install build-essential -y
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;编译安装nginx1180&#34;&gt;编译安装Nginx1.18.0&lt;/h2&gt;
+&lt;p&gt;首先我们准备一个nginx的运行用户&lt;code&gt;www&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;groupadd www &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; useradd www -g www
+&lt;span class=&#34;c1&#34;&gt;# 开始编译nginx&lt;/span&gt;
+./configure --prefix&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/webserver/nginx18 --user&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;www --group&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;www --with-pcre --with-zlib&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/root/workspace/packages/nginx/zlib-1.2.8 --with-openssl&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/root/workspace/packages/nginx/openssl-1.0.2d --with-http_gzip_static_module --with-http_realip_module --with-http_stub_status_module --add-module&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/root/workspace/packages/nginx/ngx_devel_kit-0.3.0 --with-ld-opt&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;-ljemalloc --with-stream --with-http_ssl_module --add-module&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/root/workspace/packages/nginx/nginx_upstream_check_module-0.3.0 &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; make &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; make install
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;编译完成后，在启动nginx&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;/webserver/nginx18/sbin/nginx
+&lt;span class=&#34;c1&#34;&gt;# 然后我们将nginx的work进程设置为2个，修改用户为www&lt;/span&gt;
+root@master:/webserver/nginx18/sbin# ps -fe &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt;grep nginx
+root      &lt;span class=&#34;m&#34;&gt;50131&lt;/span&gt;      &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 08:43 ?        00:00:00 nginx: master process ./nginx
+www       &lt;span class=&#34;m&#34;&gt;58005&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;50131&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 08:54 ?        00:00:00 nginx: worker process
+www       &lt;span class=&#34;m&#34;&gt;58006&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;50131&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 08:54 ?        00:00:00 nginx: worker process
+
+root@master:/webserver/nginx18/sbin# cp nginx /usr/local/bin/nginx
+root@master:/webserver/nginx18/sbin# nginx -t
+root@master:/webserver/nginx18/sbin# nginx -s reload
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;然后我们配置一个&lt;code&gt;web.devopsman.cn&lt;/code&gt;的域名到&lt;code&gt;192.168.99.128&lt;/code&gt;上，看一下服务运行和DNS解析后的效果:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@master:~/workspace/packages/nginx/nginx-1.18.0/contrib# curl -I web.devopsman.cn
+HTTP/1.1 &lt;span class=&#34;m&#34;&gt;200&lt;/span&gt; OK
+Server: nginx/1.18.0
+Date: Sat, &lt;span class=&#34;m&#34;&gt;11&lt;/span&gt; Jul &lt;span class=&#34;m&#34;&gt;2020&lt;/span&gt; 13:03:29 GMT
+Content-Type: text/html
+Content-Length: &lt;span class=&#34;m&#34;&gt;612&lt;/span&gt;
+Last-Modified: Sat, &lt;span class=&#34;m&#34;&gt;11&lt;/span&gt; Jul &lt;span class=&#34;m&#34;&gt;2020&lt;/span&gt; 12:38:29 GMT
+Connection: keep-alive
+ETag: &lt;span class=&#34;s2&#34;&gt;&amp;#34;5f09b2c5-264&amp;#34;&lt;/span&gt;
+Accept-Ranges: bytes
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;高亮nginx的配置&#34;&gt;高亮Nginx的配置&lt;/h2&gt;
+&lt;p&gt;nginx的源码包里面有配置vim编辑的nginx配置文件时内容格式高亮显示的配置文件，直接将其拷贝到&lt;code&gt;.vim&lt;/code&gt;目录下即可&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@master:~# &lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; /root/workspace/packages/nginx/nginx-1.18.0/contrib/
+root@master:~/workspace/packages/nginx/nginx-1.18.0/contrib# ls -al
+total &lt;span class=&#34;m&#34;&gt;24&lt;/span&gt;
+drwxr-xr-x &lt;span class=&#34;m&#34;&gt;4&lt;/span&gt; www www &lt;span class=&#34;m&#34;&gt;4096&lt;/span&gt; Jul &lt;span class=&#34;m&#34;&gt;11&lt;/span&gt; 08:02 .
+drwxr-xr-x &lt;span class=&#34;m&#34;&gt;9&lt;/span&gt; www www &lt;span class=&#34;m&#34;&gt;4096&lt;/span&gt; Jul &lt;span class=&#34;m&#34;&gt;11&lt;/span&gt; 08:21 ..
+-rw-r--r-- &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; www www &lt;span class=&#34;m&#34;&gt;1272&lt;/span&gt; Apr &lt;span class=&#34;m&#34;&gt;21&lt;/span&gt; 10:09 geo2nginx.pl
+-rw-r--r-- &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; www www  &lt;span class=&#34;m&#34;&gt;543&lt;/span&gt; Apr &lt;span class=&#34;m&#34;&gt;21&lt;/span&gt; 10:09 README
+drwxr-xr-x &lt;span class=&#34;m&#34;&gt;2&lt;/span&gt; www www &lt;span class=&#34;m&#34;&gt;4096&lt;/span&gt; Jul &lt;span class=&#34;m&#34;&gt;11&lt;/span&gt; 08:02 unicode2nginx
+drwxr-xr-x &lt;span class=&#34;m&#34;&gt;6&lt;/span&gt; www www &lt;span class=&#34;m&#34;&gt;4096&lt;/span&gt; Apr &lt;span class=&#34;m&#34;&gt;21&lt;/span&gt; 10:09 vim
+root@master:~/workspace/packages/nginx/nginx-1.18.0/contrib# cp -r vim/* ~/.vim/
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;拷贝进去之后，我们发现编辑nginx的配置文件变得高亮了&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;images.assets/image-20200711210137505.png&#34; alt=&#34;image-20200711210137505&#34; /&gt;&lt;/p&gt;
+</content:encoded>
+        <dc:creator>Marionxue</dc:creator>
+        
+        
+        
+        
+        
+        
+      </item>
+      
+      <item>
+        <title></title>
+        <link>https://linuxermaster.github.io/en/posts/nginx%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97%E4%B8%93%E8%BE%91/03-nginx%E7%9A%84%E7%83%AD%E5%8D%87%E7%BA%A7%E4%B8%8E%E6%97%A5%E5%BF%97%E5%88%87%E5%89%B2/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        <author>marionxue@qq.com (Marionxue)</author>
+        
+        <guid>https://linuxermaster.github.io/en/posts/nginx%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97%E4%B8%93%E8%BE%91/03-nginx%E7%9A%84%E7%83%AD%E5%8D%87%E7%BA%A7%E4%B8%8E%E6%97%A5%E5%BF%97%E5%88%87%E5%89%B2/</guid>
+        <description>编译安装 NGINX1.10 相关依赖包的下载链接 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 cd /usr/local/src wget http://nginx.org/download/nginx-1.14.2.tar.gz wget http://nginx.org/download/nginx-1.10.3.tar.gz wget https://www.zlib.net/fossils/zlib-1.2.8.tar.gz wget https://openssl.org/source/openssl-1.0.2d.tar.gz wget https://github.com/simplresty/ngx_devel_kit/archive/v0.3.0.tar.gz -O ngx_devel_kit.tar.gz wget https://github.com/jemalloc/jemalloc/releases/download/4.5.0/jemalloc-4.5.0.tar.bz2 wget https://github.com/yaoweibin/nginx_upstream_check_module/archive/v0.3.0.tar.gz -O nginx_upstream_check_module.tar.gz wget https://github.com/openresty/lua-nginx-module/archive/v0.10.10.tar.gz -O lua-nginx-module.tar.gz tar xf jemalloc-4.5.0.tar.bz2 cd jemalloc-4.5.0 &amp;amp;&amp;amp; ./configure &amp;amp;&amp;amp; make &amp;amp;&amp;amp; make install apt-get install -y lua5.1-0-dev # apt-get install -y libjemalloc-dev 如果上面</description>
+        <content:encoded>&lt;h2 id=&#34;编译安装-nginx110&#34;&gt;编译安装 NGINX1.10&lt;/h2&gt;
+&lt;h3 id=&#34;相关依赖包的下载链接&#34;&gt;相关依赖包的下载链接&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; /usr/local/src
+wget http://nginx.org/download/nginx-1.14.2.tar.gz
+wget http://nginx.org/download/nginx-1.10.3.tar.gz
+wget https://www.zlib.net/fossils/zlib-1.2.8.tar.gz
+wget https://openssl.org/source/openssl-1.0.2d.tar.gz
+wget https://github.com/simplresty/ngx_devel_kit/archive/v0.3.0.tar.gz -O ngx_devel_kit.tar.gz
+wget https://github.com/jemalloc/jemalloc/releases/download/4.5.0/jemalloc-4.5.0.tar.bz2
+wget https://github.com/yaoweibin/nginx_upstream_check_module/archive/v0.3.0.tar.gz -O nginx_upstream_check_module.tar.gz
+wget https://github.com/openresty/lua-nginx-module/archive/v0.10.10.tar.gz -O lua-nginx-module.tar.gz
+tar xf jemalloc-4.5.0.tar.bz2
+&lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; jemalloc-4.5.0 &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; ./configure &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; make &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; make install
+apt-get install -y  lua5.1-0-dev
+&lt;span class=&#34;c1&#34;&gt;# apt-get install -y libjemalloc-dev 如果上面没有贬义安装jemalloc,可以使用apt进行安装&lt;/span&gt;
+
+groupadd www
+useradd www
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;编译安装-nginx&#34;&gt;编译安装 Nginx&lt;/h3&gt;
+&lt;h4 id=&#34;编译安装-1103&#34;&gt;编译安装 1.10.3&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;tar xf nginx-1.10.3.tar.gz &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; nginx-1.10.3
+./configure --prefix&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/webserver/nginx --user&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;www --group&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;www --with-pcre --with-zlib&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/usr/local/src/zlib-1.2.8 --with-openssl&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/usr/local/src/openssl-1.0.2d --with-http_gzip_static_module --with-http_realip_module --with-http_stub_status_module --add-module&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/usr/local/src/ngx_devel_kit --add-module&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/usr/local/src/lua-nginx-module --with-ld-opt&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;-ljemalloc --with-stream --with-http_ssl_module --add-module&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/usr/local/src/nginx_upstream_check_module &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; make &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; make install
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id=&#34;编译安装-1142&#34;&gt;编译安装 1.14.2&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;tar xf nginx-1.14.2.tar.gz &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; nginx-1.14.2
+./configure --prefix&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/webserver/nginx14 --user&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;www --group&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;www --with-pcre --with-zlib&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/usr/local/src/zlib-1.2.8 --with-openssl&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/usr/local/src/openssl-1.0.2d --with-http_gzip_static_module --with-http_realip_module --with-http_stub_status_module --add-module&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/usr/local/src/ngx_devel_kit --add-module&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/usr/local/src/lua-nginx-module --with-ld-opt&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;-ljemalloc --with-stream --with-http_ssl_module --add-module&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/usr/local/src/nginx_upstream_check_module &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; make &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; make install
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;nginx-热升级&#34;&gt;nginx 热升级&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;首先启动 nginx1.10.3&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;25
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;26
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;27
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;28
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;29
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;30
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&amp;gt; root@cluster-node1:/webserver/nginx/sbin# ls
+nginx
+&amp;gt; root@cluster-node1:/webserver/nginx/sbin# &lt;span class=&#34;nb&#34;&gt;pwd&lt;/span&gt;
+/webserver/nginx/sbin
+&amp;gt; root@cluster-node1:/webserver/nginx/sbin# ./nginx
+&amp;gt; root@cluster-node1:/webserver/nginx/sbin# ps -ef &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt;grep nginx
+root      &lt;span class=&#34;m&#34;&gt;44682&lt;/span&gt;      &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 11:27 ?        00:00:00 nginx: master process ./nginx
+www       &lt;span class=&#34;m&#34;&gt;44683&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;44682&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 11:27 ?        00:00:00 nginx: worker process
+root      &lt;span class=&#34;m&#34;&gt;44685&lt;/span&gt;   &lt;span class=&#34;m&#34;&gt;6939&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 11:27 pts/1    00:00:00 grep --color&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;auto nginx
+&amp;gt; root@cluster-node1:/webserver/nginx/sbin# netstat -tunlp &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt;grep nginx
+tcp        &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;      &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 0.0.0.0:80              0.0.0.0:*               LISTEN      44682/nginx
+&amp;gt; root@cluster-node1:/webserver/nginx/sbin# ./nginx -v
+nginx version: nginx/1.10.3
+&amp;gt; root@cluster-node1:/webserver/nginx/sbin# ./nginx -V
+nginx version: nginx/1.10.3
+built by gcc 5.4.0 &lt;span class=&#34;m&#34;&gt;20160609&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;Ubuntu 5.4.0-6ubuntu1~16.04.11&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+built with OpenSSL 1.0.2d &lt;span class=&#34;m&#34;&gt;9&lt;/span&gt; Jul &lt;span class=&#34;m&#34;&gt;2015&lt;/span&gt;
+TLS SNI support enabled
+configure arguments: --prefix&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/webserver/nginx --user&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;www --group&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;www --with-pcre --with-zlib&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/usr/local/src/zlib-1.2.8 --with-openssl&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/usr/local/src/openssl-1.0.2d --with-http_gzip_static_module --with-http_realip_module --with-http_stub_status_module --add-module&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/usr/local/src/ngx_devel_kit --add-module&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/usr/local/src/lua-nginx-module --with-ld-opt&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;-ljemalloc --with-stream --with-http_ssl_module --add-module&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/usr/local/src/nginx_upstream_check_module
+
+&amp;gt; root@cluster-node1:/webserver/nginx/sbin# curl -I http://localhost
+HTTP/1.1 &lt;span class=&#34;m&#34;&gt;200&lt;/span&gt; OK
+Server: nginx/1.10.3
+Date: Thu, &lt;span class=&#34;m&#34;&gt;01&lt;/span&gt; Aug &lt;span class=&#34;m&#34;&gt;2019&lt;/span&gt; 15:29:08 GMT
+Content-Type: text/html
+Content-Length: &lt;span class=&#34;m&#34;&gt;612&lt;/span&gt;
+Last-Modified: Thu, &lt;span class=&#34;m&#34;&gt;01&lt;/span&gt; Aug &lt;span class=&#34;m&#34;&gt;2019&lt;/span&gt; 15:12:52 GMT
+Connection: keep-alive
+ETag: &lt;span class=&#34;s2&#34;&gt;&amp;#34;5d430174-264&amp;#34;&lt;/span&gt;
+Accept-Ranges: bytes
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;备份 nginx1.10.3 的二进制文件&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@cluster-node1:/webserver/nginx/sbin# cp ./nginx ./nginx_1.10.3
+root@cluster-node1:/webserver/nginx/sbin# ls -l
+total &lt;span class=&#34;m&#34;&gt;24840&lt;/span&gt;
+-rwxr-xr-x &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; root root &lt;span class=&#34;m&#34;&gt;12715840&lt;/span&gt; Aug  &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; 11:12 nginx
+-rwxr-xr-x &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; root root &lt;span class=&#34;m&#34;&gt;12715840&lt;/span&gt; Aug  &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; 11:30 nginx_1.10.3
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;复制 nginx 1.14.2 版本的 nginx 二进制文件到当前的目录下覆盖 nginx1.10.3 的二进制文件&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@cluster-node1:/webserver/nginx/sbin# cp -f /webserver/nginx14/sbin/nginx ./
+root@cluster-node1:/webserver/nginx/sbin# ls -l
+total &lt;span class=&#34;m&#34;&gt;25680&lt;/span&gt;
+-rwxr-xr-x &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; root root &lt;span class=&#34;m&#34;&gt;13574704&lt;/span&gt; Aug  &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; 11:31 nginx
+-rwxr-xr-x &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; root root &lt;span class=&#34;m&#34;&gt;12715840&lt;/span&gt; Aug  &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; 11:30 nginx_1.10.3
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;发送热更新信号&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@cluster-node1:/webserver/nginx/sbin# ps -ef &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; grep nginx
+root      &lt;span class=&#34;m&#34;&gt;44682&lt;/span&gt;      &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 11:27 ?        00:00:00 nginx: master process ./nginx
+www       &lt;span class=&#34;m&#34;&gt;44683&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;44682&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 11:27 ?        00:00:00 nginx: worker process
+root      &lt;span class=&#34;m&#34;&gt;44709&lt;/span&gt;   &lt;span class=&#34;m&#34;&gt;6939&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 11:33 pts/1    00:00:00 grep --color&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;auto nginx
+root@cluster-node1:/webserver/nginx/sbin# &lt;span class=&#34;nb&#34;&gt;kill&lt;/span&gt; -USR2 &lt;span class=&#34;m&#34;&gt;44682&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 发送一个平滑升级的信号给nginx master&lt;/span&gt;
+root@cluster-node1:/webserver/nginx/sbin# ps -ef &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; grep nginx
+root      &lt;span class=&#34;m&#34;&gt;44682&lt;/span&gt;      &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 11:27 ?        00:00:00 nginx: master process ./nginx &lt;span class=&#34;c1&#34;&gt;# nginx.old&lt;/span&gt;
+www       &lt;span class=&#34;m&#34;&gt;44683&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;44682&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 11:27 ?        00:00:00 nginx: worker process
+root      &lt;span class=&#34;m&#34;&gt;44710&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;44682&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 11:34 ?        00:00:00 nginx: master process ./nginx &lt;span class=&#34;c1&#34;&gt;# nginx.new&lt;/span&gt;
+www       &lt;span class=&#34;m&#34;&gt;44711&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;44710&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 11:34 ?        00:00:00 nginx: worker process
+root      &lt;span class=&#34;m&#34;&gt;44713&lt;/span&gt;   &lt;span class=&#34;m&#34;&gt;6939&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 11:34 pts/1    00:00:00 grep --color&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;auto nginx
+
+root@cluster-node1:/webserver/nginx/sbin# curl -I http://localhost &lt;span class=&#34;c1&#34;&gt;# 此时请求都打到nginx.new上了,nginx.old也不会在监听80/443断口了&lt;/span&gt;
+HTTP/1.1 &lt;span class=&#34;m&#34;&gt;200&lt;/span&gt; OK
+Server: nginx/1.14.2
+Date: Thu, &lt;span class=&#34;m&#34;&gt;01&lt;/span&gt; Aug &lt;span class=&#34;m&#34;&gt;2019&lt;/span&gt; 15:34:41 GMT
+Content-Type: text/html
+Content-Length: &lt;span class=&#34;m&#34;&gt;612&lt;/span&gt;
+Last-Modified: Thu, &lt;span class=&#34;m&#34;&gt;01&lt;/span&gt; Aug &lt;span class=&#34;m&#34;&gt;2019&lt;/span&gt; 15:25:32 GMT
+Connection: keep-alive
+ETag: &lt;span class=&#34;s2&#34;&gt;&amp;#34;5d43046c-264&amp;#34;&lt;/span&gt;
+Accept-Ranges: bytes
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;下线旧版本的 nginx 的 work 进程&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@cluster-node1:/webserver/nginx/sbin# &lt;span class=&#34;nb&#34;&gt;kill&lt;/span&gt; -WINCH &lt;span class=&#34;m&#34;&gt;44682&lt;/span&gt;
+root@cluster-node1:/webserver/nginx/sbin# ps -ef &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; grep nginx
+root      &lt;span class=&#34;m&#34;&gt;44682&lt;/span&gt;      &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 11:27 ?        00:00:00 nginx: master process ./nginx &lt;span class=&#34;c1&#34;&gt;# nginx.old的处理流量请求的work进行全被下掉了，保留的nginx.old的master进程用于版本回退,如果要切回就的版本，只需使用旧的nginx二进制文件执行nginx -s reload即可.&lt;/span&gt;
+root      &lt;span class=&#34;m&#34;&gt;44710&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;44682&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 11:34 ?        00:00:00 nginx: master process ./nginx
+www       &lt;span class=&#34;m&#34;&gt;44711&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;44710&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 11:34 ?        00:00:00 nginx: worker process
+root      &lt;span class=&#34;m&#34;&gt;44757&lt;/span&gt;   &lt;span class=&#34;m&#34;&gt;6939&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 11:36 pts/1    00:00:00 grep --color&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;auto nginx
+
+root@cluster-node1:/webserver/nginx/sbin# ./nginx -v
+nginx version: nginx/1.14.2
+root@cluster-node1:/webserver/nginx/sbin# ./nginx -V
+nginx version: nginx/1.14.2
+built by gcc 5.4.0 &lt;span class=&#34;m&#34;&gt;20160609&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;Ubuntu 5.4.0-6ubuntu1~16.04.11&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+built with OpenSSL 1.0.2d &lt;span class=&#34;m&#34;&gt;9&lt;/span&gt; Jul &lt;span class=&#34;m&#34;&gt;2015&lt;/span&gt;
+TLS SNI support enabled
+configure arguments: --prefix&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/webserver/nginx14 --user&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;www --group&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;www --with-pcre --with-zlib&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/usr/local/src/zlib-1.2.8 --with-openssl&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/usr/local/src/openssl-1.0.2d --with-http_gzip_static_module --with-http_realip_module --with-http_stub_status_module --add-module&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/usr/local/src/ngx_devel_kit --add-module&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/usr/local/src/lua-nginx-module --with-ld-opt&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;-ljemalloc --with-stream --with-http_ssl_module --add-module&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/usr/local/src/nginx_upstream_check_module
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;在退出 nginx 的时候，nginx 旧版本的进程依旧存在，但是会在占用 80 端口，造成从新启动 nginx 失败，因此需要先杀掉 80 端口的旧版本的进程&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;25
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;26
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;27
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;28
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;29
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;30
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;31
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;32
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@cluster-node1:/webserver/nginx/sbin# ./nginx -s quit
+root@cluster-node1:/webserver/nginx/sbin# ps -ef &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt;grep nginx
+root      &lt;span class=&#34;m&#34;&gt;44682&lt;/span&gt;      &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 11:27 ?        00:00:00 nginx: master process ./nginx
+www       &lt;span class=&#34;m&#34;&gt;44783&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;44682&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 11:38 ?        00:00:00 nginx: worker process
+root      &lt;span class=&#34;m&#34;&gt;44785&lt;/span&gt;   &lt;span class=&#34;m&#34;&gt;6939&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 11:38 pts/1    00:00:00 grep --color&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;auto nginx
+root@cluster-node1:/webserver/nginx/sbin# ./nginx -v
+nginx version: nginx/1.14.2
+root@cluster-node1:/webserver/nginx/sbin# ps -ef &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt;grep nginx
+root      &lt;span class=&#34;m&#34;&gt;44682&lt;/span&gt;      &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 11:27 ?        00:00:00 nginx: master process ./nginx
+www       &lt;span class=&#34;m&#34;&gt;44783&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;44682&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 11:38 ?        00:00:00 nginx: worker process
+root      &lt;span class=&#34;m&#34;&gt;44788&lt;/span&gt;   &lt;span class=&#34;m&#34;&gt;6939&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 11:38 pts/1    00:00:00 grep --color&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;auto nginx
+root@cluster-node1:/webserver/nginx/sbin# ./nginx -s reload
+nginx: &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;error&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt; open&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;/webserver/nginx14/logs/nginx.pid&amp;#34;&lt;/span&gt; failed &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;2: No such file or directory&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+root@cluster-node1:/webserver/nginx/sbin# ./nginx
+nginx: &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;emerg&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt; bind&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt; to 0.0.0.0:80 failed &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;98: Address already in use&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+nginx: &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;emerg&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt; bind&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt; to 0.0.0.0:80 failed &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;98: Address already in use&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+nginx: &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;emerg&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt; bind&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt; to 0.0.0.0:80 failed &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;98: Address already in use&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+nginx: &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;emerg&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt; bind&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt; to 0.0.0.0:80 failed &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;98: Address already in use&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+nginx: &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;emerg&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt; bind&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt; to 0.0.0.0:80 failed &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;98: Address already in use&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+nginx: &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;emerg&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt; still could not bind&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt;
+root@cluster-node1:/webserver/nginx/sbin# ./nginx -s stop
+nginx: &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;error&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt; open&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;/webserver/nginx14/logs/nginx.pid&amp;#34;&lt;/span&gt; failed &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;2: No such file or directory&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+root@cluster-node1:/webserver/nginx/sbin# ls -l /webserver/nginx14/logs/nginx.pid
+ls: cannot access &lt;span class=&#34;s1&#34;&gt;&amp;#39;/webserver/nginx14/logs/nginx.pid&amp;#39;&lt;/span&gt;: No such file or directory
+root@cluster-node1:/webserver/nginx/sbin# pkill nginx
+root@cluster-node1:/webserver/nginx/sbin# ./nginx
+root@cluster-node1:/webserver/nginx/sbin# ps -ef &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt;grep nginx
+root      &lt;span class=&#34;m&#34;&gt;44800&lt;/span&gt;      &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 11:39 ?        00:00:00 nginx: master process ./nginx
+www       &lt;span class=&#34;m&#34;&gt;44801&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;44800&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 11:39 ?        00:00:00 nginx: worker process
+root      &lt;span class=&#34;m&#34;&gt;44803&lt;/span&gt;   &lt;span class=&#34;m&#34;&gt;6939&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; 11:40 pts/1    00:00:00 grep --color&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;auto nginx
+root@cluster-node1:/webserver/nginx/sbin# ./nginx -v
+nginx version: nginx/1.14.2
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;nginx日志切割&#34;&gt;nginx日志切割&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;nb&#34;&gt;kill&lt;/span&gt; -USR1 &lt;span class=&#34;nv&#34;&gt;$NGINX_PID&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 或者使用nginx的reopen选项&lt;/span&gt;
+nginx -s reopen
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;</content:encoded>
+        <dc:creator>Marionxue</dc:creator>
+        
+        
+        
+        
+        
+        
+      </item>
+      
+      <item>
+        <title></title>
+        <link>https://linuxermaster.github.io/en/posts/nginx%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97%E4%B8%93%E8%BE%91/04-nginx%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90web%E6%9C%8D%E5%8A%A1%E5%99%A8/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        <author>marionxue@qq.com (Marionxue)</author>
+        
+        <guid>https://linuxermaster.github.io/en/posts/nginx%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97%E4%B8%93%E8%BE%91/04-nginx%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90web%E6%9C%8D%E5%8A%A1%E5%99%A8/</guid>
+        <description>分享一个通过nginx搭建一个静态资源的web服务器，这里将会涉及到三个部分的内容： 静态文件服务器的配置 开启静态网站文件传输的压缩 自定义访问日志的格式 静态文件服</description>
+        <content:encoded>&lt;p&gt;分享一个通过nginx搭建一个静态资源的web服务器，这里将会涉及到三个部分的内容：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;静态文件服务器的配置&lt;/li&gt;
+&lt;li&gt;开启静态网站文件传输的压缩&lt;/li&gt;
+&lt;li&gt;自定义访问日志的格式&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;静态文件服务器的配置&#34;&gt;静态文件服务器的配置&lt;/h2&gt;
+&lt;p&gt;简单的就通过一个自定义的index.html文件当做静态网站，下面准备一下静态文件资源存储的位置。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;mkdir /webserver/nginx18/ops/
+&lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;静态网站案例&amp;#34;&lt;/span&gt; &amp;gt; /webserver/nginx18/ops/index.html
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;增加nginx配置文件，在&lt;code&gt;/webserver/nginx18/conf/nginx.conf&lt;/code&gt;里增加一个server配置段，然后通过alias映射到虚拟目录。注意访问时location中的&lt;code&gt;/&lt;/code&gt;对应的是ops后面的&lt;code&gt;/&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-conf&#34; data-lang=&#34;conf&#34;&gt;    server {
+         listen      80;
+         server_name web.devopsman.cn;
+         location / {
+            alias ops/;
+         }
+    }
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;测试访问:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-bashj&#34; data-lang=&#34;bashj&#34;&gt;☸️  k8sdev🔥 default  ~  🐳 👉 curl web.devopsman.cn
+静态网站demo
+☸️  k8sdev🔥 default  ~  🐳 👉 curl -I web.devopsman.cn
+HTTP/1.1 200 OK
+Server: nginx/1.18.0
+Date: Sat, 11 Jul 2020 14:11:46 GMT
+Content-Type: text/html
+Content-Length: 17
+Last-Modified: Sat, 11 Jul 2020 14:11:13 GMT
+Connection: keep-alive
+ETag: &amp;quot;5f09c881-11&amp;quot;
+Accept-Ranges: bytes
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;开启静态网站压缩&#34;&gt;开启静态网站压缩&lt;/h2&gt;
+&lt;p&gt;nginx可以通过gzip模块在http配置段开启网站压缩传输，提高访问速度&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;    gzip  on&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    gzip_min_length 1&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 表示小于1k不压缩&lt;/span&gt;
+    gzip_comp_level 2&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 设置压缩的级别&lt;/span&gt;
+    gzip_types text_plain application/x-javascript text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;# 启用压缩类型的文件&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;配置访问日志格式&#34;&gt;配置访问日志格式&lt;/h2&gt;
+&lt;p&gt;nginx的日志格式，是通过nginx支持的环境变量将所需要的日志信息给组装在一起，在nginx里，除了内置的环境变量之外，还包括第三方模块的环境变量信息，比如，nginx核心模块的支持的环境变量可以在&lt;a href=&#34;http://nginx.org/en/docs/http/ngx_http_core_module.html#variables&#34; title=&#34;Nignx-core Embedded Variables&#34;&gt;Embedded Variables&lt;/a&gt;找到，第三方支持哪些环境变量可以在对应的模块文档种找到,比如&lt;code&gt;realip&lt;/code&gt;模块支持的环境变量[Embedded Variables](&lt;a href=&#34;http://nginx.org/en/docs/stream/ngx_stream_realip_module.html#variables&#34;&gt;http://nginx.org/en/docs/stream/ngx_stream_realip_module.html#variables&lt;/a&gt; &amp;ldquo;nginx-realip Embedded variables )，下面是是一个定义的案例，定义一个&lt;code&gt;main&lt;/code&gt;类型的日志格式。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;25
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;26
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;    log_format main   &lt;span class=&#34;s1&#34;&gt;&amp;#39;{&amp;#39;&lt;/span&gt;
+		      &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#34;@timestamp&amp;#34;:&amp;#34;$time_iso8601&amp;#34;,&amp;#39;&lt;/span&gt;
+                      &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#34;connection&amp;#34;:&amp;#34;$connection&amp;#34;,&amp;#39;&lt;/span&gt;
+                      &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#34;connection_requests&amp;#34;:&amp;#34;$connection_requests&amp;#34;,&amp;#39;&lt;/span&gt;
+                      &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#34;request&amp;#34;:&amp;#34;$request&amp;#34;,&amp;#39;&lt;/span&gt;
+                      &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#34;request_time&amp;#34;:&amp;#34;$request_time&amp;#34;,&amp;#39;&lt;/span&gt;
+                      &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#34;request_length&amp;#34;:&amp;#34;$request_length&amp;#34;,&amp;#39;&lt;/span&gt;
+                      &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#34;request_uri&amp;#34;:&amp;#34;$request_uri&amp;#34;,&amp;#39;&lt;/span&gt;
+                      &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#34;request_method&amp;#34;:&amp;#34;$request_method&amp;#34;,&amp;#39;&lt;/span&gt;
+                      &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#34;server_name&amp;#34;:&amp;#34;$server_name&amp;#34;,&amp;#39;&lt;/span&gt;
+                      &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#34;status&amp;#34;:&amp;#34;$status&amp;#34;,&amp;#39;&lt;/span&gt;
+                      &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#34;remote_user&amp;#34;:&amp;#34;$remote_user&amp;#34;,&amp;#39;&lt;/span&gt;
+		                  &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#34;remote_addr&amp;#34;:&amp;#34;$remote_addr&amp;#34;,&amp;#39;&lt;/span&gt;
+                      &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#34;time_local&amp;#34;:&amp;#34;$time_local&amp;#34;,&amp;#39;&lt;/span&gt;
+                      &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#34;body_bytes_sent&amp;#34;:&amp;#34;$body_bytes_sent&amp;#34;,&amp;#39;&lt;/span&gt;
+                      &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#34;bytes_sent&amp;#34;:&amp;#34;$bytes_sent&amp;#34;,&amp;#39;&lt;/span&gt;
+                      &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#34;msec&amp;#34;:&amp;#34;$msec&amp;#34;,&amp;#39;&lt;/span&gt;
+                      &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#34;upstream_status&amp;#34;:&amp;#34;$upstream_status&amp;#34;,&amp;#39;&lt;/span&gt;
+                      &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#34;upstream_addr&amp;#34;:&amp;#34;$upstream_addr&amp;#34;,&amp;#39;&lt;/span&gt;
+                      &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#34;upstream_response_time&amp;#34;:&amp;#34;$upstream_response_time&amp;#34;,&amp;#39;&lt;/span&gt;
+                      &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#34;http_sessionKey&amp;#34;:&amp;#34;$http_sessionKey&amp;#34;,&amp;#39;&lt;/span&gt;
+                      &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#34;cookie_sk&amp;#34;:&amp;#34;$cookie_sk&amp;#34;,&amp;#39;&lt;/span&gt;
+                      &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#34;http_referer&amp;#34;:&amp;#34;$http_referer&amp;#34;,&amp;#39;&lt;/span&gt;
+                      &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#34;http_user_agent&amp;#34;:&amp;#34;$http_user_agent&amp;#34;,&amp;#39;&lt;/span&gt;
+                      &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#34;http_x_forwarded_for&amp;#34;:&amp;#34;$http_x_forwarded_for&amp;#34;&amp;#39;&lt;/span&gt;
+                      &lt;span class=&#34;s1&#34;&gt;&amp;#39;}&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;在定义好日志格式之后，通过&lt;code&gt;access_log&lt;/code&gt;指令配置日志的存储路径，在配置完日志之后，&lt;code&gt;reload&lt;/code&gt;一下就可自动创建日志文件&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;access_log  logs/web.devopsman.cn.access.log  main&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;此时，发送一个http的请求，就会按照日志的格式记录日志写入到日志文件种&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@master:/webserver/nginx18/logs# tail -f web.devopsman.cn.access.log 
+&lt;span class=&#34;o&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;@timestamp&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;2020-07-11T10:26:55-04:00&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;connection&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;17&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;connection_requests&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;1&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;request&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;HEAD / HTTP/1.1&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;request_time&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;0.000&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;request_length&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;81&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;request_uri&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;/&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;request_method&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;HEAD&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;server_name&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;web.devopsman.cn&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;status&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;200&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;remote_user&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;-&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;remote_addr&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;192.168.99.1&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;time_local&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;11/Jul/2020:10:26:55 -0400&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;body_bytes_sent&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;0&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;bytes_sent&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;236&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;msec&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;1594477615.080&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;upstream_status&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;-&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;upstream_addr&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;-&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;upstream_response_time&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;-&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;http_sessionKey&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;-&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;cookie_sk&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;-&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;http_referer&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;-&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;http_user_agent&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;curl/7.64.1&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;http_x_forwarded_for&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;-&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;</content:encoded>
         <dc:creator>Marionxue</dc:creator>
         
         
