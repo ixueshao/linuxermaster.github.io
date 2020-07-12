@@ -1,0 +1,811 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" 
+  xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+  xmlns:dc="http://purl.org/dc/elements/1.1/" 
+  xmlns:atom="http://www.w3.org/2005/Atom" 
+  xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" 
+  xmlns:media="http://search.yahoo.com/mrss/">
+  <channel>
+    <title>openvpn on 云原生生态圈</title>
+    <link>https://linuxermaster.github.io/en/tags/openvpn/</link>
+    <description>Recent content in openvpn on 云原生生态圈</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <managingEditor>marionxue@qq.com (Marionxue)</managingEditor>
+    <webMaster>marionxue@qq.com (Marionxue)</webMaster>
+    <copyright>[云原生生态圈](https://www.devopsman.cn) &amp;copy;2016-{year}, All Rights Reserved [转载注明出处: devopsman.cn](https://www.devopsman.cn)</copyright>
+    <lastBuildDate>Wed, 10 Jun 2020 12:00:06 +0900</lastBuildDate>
+    <sy:updatePeriod>hourly</sy:updatePeriod>
+    
+        <atom:link href="https://linuxermaster.github.io/en/tags/openvpn/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+
+      
+      <item>
+        <title>Openvpn-最难忘的一次Oenvpn『灾后重建』</title>
+        <link>https://linuxermaster.github.io/en/posts/20200619-%E6%9C%80%E9%9A%BE%E5%BF%98%E7%9A%84%E4%B8%80%E6%AC%A1openvpn%E7%81%BE%E5%90%8E%E9%87%8D%E5%BB%BA/</link>
+        <pubDate>Wed, 10 Jun 2020 12:00:06 +0900</pubDate>
+        <author>marionxue@qq.com (Marionxue)</author>
+        <atom:modified>Wed, 10 Jun 2020 12:00:06 +0900</atom:modified>
+        <guid>https://linuxermaster.github.io/en/posts/20200619-%E6%9C%80%E9%9A%BE%E5%BF%98%E7%9A%84%E4%B8%80%E6%AC%A1openvpn%E7%81%BE%E5%90%8E%E9%87%8D%E5%BB%BA/</guid>
+        <description>这次终于把自己给&amp;quot;坑&amp;quot;坏了，因为一次不可控制的&amp;quot;停电&amp;quot;让公司的部分老年机饱受了一次&amp;quot;灾难性&amp;quot;的洗礼，</description>
+        <content:encoded>&lt;p&gt;这次终于把自己给&amp;quot;坑&amp;quot;坏了，因为一次不可控制的&amp;quot;停电&amp;quot;让公司的部分老年机饱受了一次&amp;quot;灾难性&amp;quot;的洗礼，幸运的是部分幸存下来的主机中包括我们至关重要的服务，而就是那些看似无状态的服务深深的打了自己一巴掌。首当其冲的就是那个万恶的&lt;code&gt;Openvpn&lt;/code&gt;服务。使用Openvpn主要是为了解决一下场景:&lt;/p&gt;
+&lt;p&gt;我们的部分非业务办公服务主要服务于内部的办公人员，由于疫情的背景下，我们需要满足远程办公的条件以及非本地的同事也是需要访问这些资源的，包括一些暴露在公网限制访问的服务等，所以通过点对点登录访问的Openvpn就是我们一直以来的选择。&lt;/p&gt;
+&lt;p&gt;灾难后的恢复永远是让人发狂，而这边大家又在不断的&amp;quot;吹更&amp;rdquo;，实在难以淡定下来，不懂网络的我也没法直接在那些老古董身上动刀子，在一段焦虑和无奈之后还是冷静下仔细思考如何快速的恢复&amp;quot;战场&amp;rdquo;，因为一台物理机老前辈因为掉电让磁盘歇工了，短时间内想要修复物理机恐怕已经不可能了，所以我开始这样做：&lt;/p&gt;
+&lt;h5 id=&#34;第一步-网上冲浪查看防火墙端口绑定规则&#34;&gt;第一步 网上冲浪，查看防火墙端口绑定规则&lt;/h5&gt;
+&lt;p&gt;在网上疯狂的搜索着关于&lt;code&gt;CISCO ASA5515-X&lt;/code&gt;的网络配置，查看防火墙中关于&lt;code&gt;公网IP:x.x.x.x&lt;/code&gt;与主机之间端口射映关系，因为不断的变更交接人，记录的网络配置信息和文档早已随着时间飞逝了，这时候不免想来句&lt;code&gt;你妹的&lt;/code&gt;&amp;hellip;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;ciscoasa# show nat
+...
+ciscoasa# show run object
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;通过查看一波&lt;code&gt;nat&lt;/code&gt;、&lt;code&gt;object&lt;/code&gt;和&lt;code&gt;service&lt;/code&gt;之后，发现了防火墙上配置的&lt;code&gt;Public IP&lt;/code&gt;与内部服务&lt;code&gt;OpenVPN&lt;/code&gt;主机之间端口的映射关系，于是赶紧找几个还&lt;code&gt;有气&lt;/code&gt;的主机进行业务恢复&lt;/p&gt;
+&lt;h5 id=&#34;第二步-照着葫芦画个瓢&#34;&gt;第二步 照着葫芦画个瓢&lt;/h5&gt;
+&lt;p&gt;这是一台&lt;code&gt;Centos7&lt;/code&gt;主机&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@vpn ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# cat /etc/redhat-release&lt;/span&gt;
+CentOS Linux release 7.7.1908 &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;Core&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;首先就是将其&lt;code&gt;IP&lt;/code&gt;地址修改为防火墙内规则制定的主机IP&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@vpn ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# cat /etc/sysconfig/network-scripts/ifcfg-ens160&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;TYPE&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Ethernet&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;PROXY_METHOD&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;none&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;BROWSER_ONLY&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;no&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;BOOTPROTO&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;none&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;DEFROUTE&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;yes&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;IPV4_FAILURE_FATAL&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;no&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;IPV6INIT&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;yes&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;IPV6_AUTOCONF&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;yes&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;IPV6_DEFROUTE&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;yes&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;IPV6_FAILURE_FATAL&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;no&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;IPV6_ADDR_GEN_MODE&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;stable-privacy&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;NAME&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;ens160&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;UUID&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;aa08d0dd-5ba5-412c-84ab-716b885c4d89&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;DEVICE&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;ens160&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;ONBOOT&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;yes&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;IPADDR&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;172.16.99.129&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;PREFIX&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;24&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;GATEWAY&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;192.168.99.254&amp;#34;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 修改成需要的IP地址&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;IPV6_PRIVACY&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;no&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;PEERDNS&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;yes&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;DNS1&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;114.114.114.114&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h5 id=&#34;第三步-配置openvpn环境&#34;&gt;第三步 配置OpenVPN环境&lt;/h5&gt;
+&lt;p&gt;在找对IP访问的映射关系之后,就是抓紧恢复服务，于是有了下面的安装配置段:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;使用&lt;code&gt;easy-rsa&lt;/code&gt;制作&lt;code&gt;OpenVPN&lt;/code&gt;所需的证书以及客户端证书&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;yum install openvpn
+mkdir /data/tools -p 
+wget -P /data/tools https://github.com/OpenVPN/easy-rsa/releases/download/3.0.1/EasyRSA-3.0.1.tgz
+tar zxf EasyRSA-3.0.1.tgz
+cp -rf EasyRSA-3.0.1 /etc/openvpn/easy-rsa
+&lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; /etc/openvpn/easy-rsa
+
+./easyrsa init-pki &lt;span class=&#34;c1&#34;&gt;# 初始化证书目录pki&lt;/span&gt;
+./easyrsa build-ca nopass 
+&lt;span class=&#34;c1&#34;&gt;# 创建根证书，提示输入Common Name，名称随意，但是不能和服务端证书或客户端证书名称相同&lt;/span&gt;
+./easyrsa gen-dh &lt;span class=&#34;c1&#34;&gt;# 生成Diffle Human参数，它能保证密钥在网络中安全传输&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;制作&lt;code&gt;CA&lt;/code&gt;证书&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;./easyrsa init-pki &lt;span class=&#34;c1&#34;&gt;# 初始化证书目录pki&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;制作服务端&lt;code&gt;OpenVPN Server&lt;/code&gt;证书&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;./easyrsa build-server-full server nopass &lt;span class=&#34;c1&#34;&gt;# server是服务端证书名称，可以用其它名称&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol start=&#34;4&#34;&gt;
+&lt;li&gt;制作客户端证书&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;./easyrsa build-client-full barry nopass &lt;span class=&#34;c1&#34;&gt;# barry是客户端证书名称，可以用其它名称&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol start=&#34;5&#34;&gt;
+&lt;li&gt;配置LDAP认证&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;yum install openvpn-auth-ldap -y
+&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@vpn openvpn&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# ls -al /usr/lib64/openvpn/plugin/lib/openvpn-auth-ldap.so&lt;/span&gt;
+-rwxr-xr-x &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; root root &lt;span class=&#34;m&#34;&gt;133320&lt;/span&gt; Sep  &lt;span class=&#34;m&#34;&gt;6&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;2019&lt;/span&gt; /usr/lib64/openvpn/plugin/lib/openvpn-auth-ldap.so
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol start=&#34;6&#34;&gt;
+&lt;li&gt;准备LDAP认证配置文件&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&#34;language-conf&#34; data-lang=&#34;conf&#34;&gt;&amp;lt;LDAP&amp;gt;
+# LDAP server URL
+URL		ldap://192.168.99.130
+# Bind DN (If your LDAP server doesn&#39;t support anonymous binds)
+BindDN		cn=openvpn,dc=openldap,dc=kubemaster,dc=top
+Password	openvpn_Passsword
+# Network timeout (in seconds)
+Timeout		15
+# Enable Start TLS
+#TLSEnable	no
+# Follow LDAP Referrals (anonymously)
+#FollowReferrals no
+# TLS CA Certificate File
+#TLSCACertFile	/usr/local/etc/ssl/ca.pem
+# TLS CA Certificate Directory
+#TLSCACertDir	/etc/ssl/certs
+# Client Certificate and key
+# If TLS client authentication is required
+#TLSCertFile	/usr/local/etc/ssl/client-cert.pem
+#TLSKeyFile	/usr/local/etc/ssl/client-key.pem
+# Cipher Suite
+# The defaults are usually fine here
+# TLSCipherSuite	ALL:!ADH:@STRENGTH
+&amp;lt;/LDAP&amp;gt;
+
+&amp;lt;Authorization&amp;gt;
+# Base DN
+BaseDN		&amp;quot;ou=People,dc=openldap,dc=kubemaster,dc=top&amp;quot;
+# User Search Filter
+SearchFilter	&amp;quot;(&amp;amp;(uid=%u))&amp;quot;
+
+# Require Group Membership
+RequireGroup	false
+
+# Add non-group members to a PF table (disabled)
+#PFTable	ips_vpn_users
+
+&amp;lt;Group&amp;gt;
+  BaseDN		&amp;quot;ou=Groups,dc=example,dc=com&amp;quot;
+  SearchFilter	&amp;quot;(|(cn=developers)(cn=artists))&amp;quot;
+  MemberAttribute	uniqueMember
+  # Add group members to a PF table (disabled)
+  #PFTable	ips_vpn_eng
+&amp;lt;/Group&amp;gt;
+&amp;lt;/Authorization&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;ol start=&#34;7&#34;&gt;
+&lt;li&gt;配置服务端配置文件&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;25
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;26
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;27
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;28
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;29
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;30
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;31
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@vpn openvpn&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# cat server.conf |egrep -v &amp;#39;^$|^#|^\;&amp;#39;&lt;/span&gt;
+port &lt;span class=&#34;m&#34;&gt;11194&lt;/span&gt;
+proto tcp
+dev tun
+ca /etc/openvpn/easy-rsa/pki/ca.crt
+cert /etc/openvpn/easy-rsa/pki/issued/server.crt
+key /etc/openvpn/easy-rsa/pki/private/server.key  &lt;span class=&#34;c1&#34;&gt;# This file should be kept secret&lt;/span&gt;
+dh /etc/openvpn/easy-rsa/pki/dh.pem
+server 10.8.0.0 255.255.255.0 &lt;span class=&#34;c1&#34;&gt;# 这里是openvpn server的IP地址池&lt;/span&gt;
+ifconfig-pool-persist ipp.txt
+push &lt;span class=&#34;s2&#34;&gt;&amp;#34;dhcp-option DNS 114.114.114.114&amp;#34;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 下发给客户端的DNS&lt;/span&gt;
+push &lt;span class=&#34;s2&#34;&gt;&amp;#34;dhcp-option DNS 8.8.8.8&amp;#34;&lt;/span&gt;
+client-to-client
+duplicate-cn
+keepalive &lt;span class=&#34;m&#34;&gt;10&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;120&lt;/span&gt;
+comp-lzo
+max-clients &lt;span class=&#34;m&#34;&gt;50&lt;/span&gt;
+user root
+group root
+persist-key
+persist-tun
+status openvpn-status.log
+log         openvpn.log
+log-append  openvpn.log
+verb &lt;span class=&#34;m&#34;&gt;3&lt;/span&gt;
+mute &lt;span class=&#34;m&#34;&gt;10&lt;/span&gt;
+client-cert-not-required
+plugin /usr/lib64/openvpn/plugin/lib/openvpn-auth-ldap.so &lt;span class=&#34;s2&#34;&gt;&amp;#34;/etc/openvpn/auth/ldap.conf&amp;#34;&lt;/span&gt;
+username-as-common-name
+push &lt;span class=&#34;s2&#34;&gt;&amp;#34;route 192.168.0.0 255.255.0.0&amp;#34;&lt;/span&gt;
+push &lt;span class=&#34;s2&#34;&gt;&amp;#34;route 192.168.99.0 255.255.255.0&amp;#34;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 下发给客户端的需要走VPN的网络流量，其它网段不走VPN，可正常上网。&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol start=&#34;8&#34;&gt;
+&lt;li&gt;开启路由转发&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;net.ipv4.ip_forward = 1&amp;#34;&lt;/span&gt; &amp;gt;&amp;gt; /etc/sysctl.conf
+sysctl -p
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol start=&#34;9&#34;&gt;
+&lt;li&gt;&lt;code&gt;OpenVPN&lt;/code&gt;防火墙的配置，这里是最重要的一环，注意不要把你的网络设备名称写错了。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;iptables -t nat -A POSTROUTING -s 10.8.0.0/16 -o ens160 -j MASQUERADE &lt;span class=&#34;c1&#34;&gt;# 网络设备为ens160&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol start=&#34;10&#34;&gt;
+&lt;li&gt;配置&lt;code&gt;OpenVPN&lt;/code&gt;的启停脚本&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;cp&#34;&gt;#!/bin/bash
+&lt;/span&gt;&lt;span class=&#34;cp&#34;&gt;&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;OpenVPN ..........[STOP]&amp;#34;&lt;/span&gt;
+ps -ef &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt;grep openvpn &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; grep -v grep &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; awk &lt;span class=&#34;s1&#34;&gt;&amp;#39;{print $2}&amp;#39;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; xargs &lt;span class=&#34;nb&#34;&gt;kill&lt;/span&gt;
+&lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;OpenVPN ..........[START]&amp;#34;&lt;/span&gt;
+/usr/local/openvpn/sbin/openvpn --config /etc/openvpn/server.conf &lt;span class=&#34;p&#34;&gt;&amp;amp;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol start=&#34;11&#34;&gt;
+&lt;li&gt;开机服务自启,将下面内容写到&lt;code&gt;/etc/rc.local&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;/usr/local/openvpn/sbin/openvpn --daemon --config /etc/openvpn/server.conf &amp;gt; /dev/null 2&amp;gt;&lt;span class=&#34;p&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;&amp;amp;&lt;/span&gt;
+&lt;span class=&#34;nb&#34;&gt;exit&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol start=&#34;12&#34;&gt;
+&lt;li&gt;客户端的配置&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# 把服务器上这三个文件拷贝下来和客户端的配置文件放在一起&lt;/span&gt;
+/etc/openvpn/easy-rsa/pki/private/barry.key
+/etc/openvpn/easy-rsa/pki/issued/barry.crt
+/etc/openvpn/easy-rsa/pki/ca.crt
+&lt;span class=&#34;c1&#34;&gt;# 客户端配置文件内容&lt;/span&gt;
+client
+dev tun
+proto tcp
+resolv-retry infinite
+nobind
+remote PUBLIC_ADDRESS &lt;span class=&#34;m&#34;&gt;11194&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 就是与192.168.99.129上的11194绑定的那个公网IP地址&lt;/span&gt;
+persist-key
+persist-tun
+ca ca.crt
+ns-cert-type server
+cert barry.crt
+key barry.key
+verb &lt;span class=&#34;m&#34;&gt;3&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 日志等级&lt;/span&gt;
+comp-lzo
+auth-user-pass
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;这样基本上就完成了OpenVPN的搭建部署，也可能是我最后一次整这玩意儿。下面是配置OpenVPN时候遇到的问题&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;明明在openvpn服务端配置了服务端同一网段的下发路由，但就是ping不通服务端同一网段的其他主机，那你需要认真检查下面的配置，包括网卡设备名&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;iptables -t nat -A POSTROUTING -s 10.8.0.0/16 -o ens160 -j MASQUERADE &lt;span class=&#34;c1&#34;&gt;# 网络设备为ens160&lt;/span&gt;
+sudo iptables -nL -t nat &lt;span class=&#34;c1&#34;&gt;# 查看&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;为什么连上了OpenVPN我所有的流量都经过OpenVPN了,那是你启用了下面的配置，这个配置你也可以用于科学***/上网&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;push &lt;span class=&#34;s2&#34;&gt;&amp;#34;redirect-gateway def1 bypass-dhcp&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;给客户端指定固定的&lt;code&gt;VPN&lt;/code&gt;地址&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;client-config-dir ccd &lt;span class=&#34;c1&#34;&gt;# 表示指定固定IP地址的客户端配置文件存储在openvpn服务端配置文件统计目录下的ccd目录里面&lt;/span&gt;
+route 192.168.40.128 255.255.255.248 &lt;span class=&#34;c1&#34;&gt;# 指定客户端IP的地址&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol start=&#34;4&#34;&gt;
+&lt;li&gt;为什么在&lt;code&gt;linux/MacOS&lt;/code&gt;上配置都没有问题，而在window上有问题，此时你需要注意的是，在window上安装和启动&lt;code&gt;OpenVPN&lt;/code&gt;都是需要管理员权限的，因为它会涉及到一些添加路由的操作，这些需要管理员权限。&lt;/li&gt;
+&lt;/ol&gt;
+</content:encoded>
+        <dc:creator>云原生生态圈</dc:creator>
+        <media:content url="https://linuxermaster.github.ioimages/posts/harbor-syncdata.jpg" medium="image"><media:title type="html">featured image</media:title></media:content>
+        
+        
+        
+          
+            
+              <category>openvpn</category>
+            
+          
+            
+              <category>openldap</category>
+            
+          
+            
+              <category>网络</category>
+            
+          
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>Openvpn-高级进阶</title>
+        <link>https://linuxermaster.github.io/en/posts/20200620-openvpn%E9%AB%98%E7%BA%A7%E8%BF%9B%E9%98%B6/</link>
+        <pubDate>Wed, 10 Jun 2020 12:00:06 +0900</pubDate>
+        <author>marionxue@qq.com (Marionxue)</author>
+        <atom:modified>Wed, 10 Jun 2020 12:00:06 +0900</atom:modified>
+        <guid>https://linuxermaster.github.io/en/posts/20200620-openvpn%E9%AB%98%E7%BA%A7%E8%BF%9B%E9%98%B6/</guid>
+        <description>OpenVPN高级进阶 OpenVPN服务是一个比较老的服务了，但是作为一个核心的基础服务我觉得还是有必要认真仔细的掌握和理解，并且能根据其自身的功能优化和配置出</description>
+        <content:encoded>&lt;h3 id=&#34;openvpn高级进阶&#34;&gt;OpenVPN高级进阶&lt;/h3&gt;
+&lt;p&gt;OpenVPN服务是一个比较老的服务了，但是作为一个核心的基础服务我觉得还是有必要认真仔细的掌握和理解，并且能根据其自身的功能优化和配置出我们需要的场景，只要能解决实际的问题场景，对我们来说就是有价值的，下面通过几个场景聊一下OpeVPN的高阶配置选项:&lt;/p&gt;
+&lt;p&gt;背景：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;公司内部网段是&lt;code&gt;192.168.99.0/24&lt;/code&gt;；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;所有人&lt;/code&gt;允许访问反向代理主机为&lt;code&gt;192.168.99.130&lt;/code&gt;，但不能访问其他服务器；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;特定的用户&lt;/code&gt;允许访问&lt;code&gt;数据库服务器&lt;/code&gt;为&lt;code&gt;192.168.99.131&lt;/code&gt;，不能访问其他服务器；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;管理员&lt;/code&gt;能访问&lt;code&gt;所有公司内网服务器&lt;/code&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;场景1-限制主机访问&#34;&gt;场景1 限制主机访问&lt;/h3&gt;
+&lt;p&gt;我们不需要&lt;code&gt;VPN客户端&lt;/code&gt;访问&lt;code&gt;VPN服务端&lt;/code&gt;所在集群中的&lt;code&gt;所有其他主机&lt;/code&gt;,允许某些特定的VPN客户端访问指定的内网主机资源的时候，我们需要在客户端无感知的情况下对VPN服务端做一些设置满足以上场景:&lt;/p&gt;
+&lt;p&gt;更新服务端的配置，将VPN地址池的网段划分为&lt;code&gt;管理员&lt;/code&gt;网段、&lt;code&gt;客户组&lt;/code&gt;网段、&lt;code&gt;普通&lt;/code&gt;网络:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# 在Openvpn服务端配置文件server.conf增加：&lt;/span&gt;
+&lt;span class=&#34;c1&#34;&gt;#10.8.0.0是给所有VPN客户端的IP段；&lt;/span&gt;
+server 10.8.0.0 255.255.255.0
+&lt;span class=&#34;c1&#34;&gt;#10.8.1.0是给管理员分配的IP段；&lt;/span&gt;
+server 10.8.1.0 255.255.255.0
+&lt;span class=&#34;c1&#34;&gt;#10.8.2.0就是给特定用户组分配的IP段；&lt;/span&gt;
+server 10.8.2.0 255.255.255.0
+&lt;span class=&#34;c1&#34;&gt;#下面是定义服务器读取特殊客户端配置文件的目录为ccd,ccd是与Openvpn服务端配置文件同级目录中的ccd目录&lt;/span&gt;
+client-config-dir ccd
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;然后给管理员配置访问网络&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;cat ccd/sysadmin1
+ifconfig-push 10.8.1.1 10.8.1.2
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;客户组网络:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;cat ccd/kehugroup
+ifconfig-push 10.8.2.1 10.8.2.2
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;这里需要注意的是, &lt;code&gt;ccd&lt;/code&gt;目录下的文件名就是用户的&lt;code&gt;Common Name&lt;/code&gt;，OpenVPN是根据该名称来获得指定客户端的，客户端的IP地址不是任意指定的，由于Windows的TAP驱动必须采用/30网段的IP，为兼容该协议，应从特定的IP地址中选择，而且是成组出现的。&lt;/p&gt;
+&lt;p&gt;最后在完成网络的划分之后，在&lt;code&gt;OpenVPN&lt;/code&gt;端进行&lt;code&gt;Iptables&lt;/code&gt;限制:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;iptables -A FORWARD -i tun0 -s 10.8.0.0/24 -d 192.168.99.130 -j ACCEPT
+iptables -A FORWARD -i tun0 -s 10.8.1.0/24 -d 192.168.99.0/24 -j ACCEPT
+iptables -A FORWARD -i tun0 -s 10.8.2.0/24 -d 192.168.99.131 -j ACCEPT
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;场景2-打通openvpn客户端与服务端的内网&#34;&gt;场景2 打通OpenVPN客户端与服务端的内网&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;c1&#34;&gt;#让所有客户端都增加到内网192.168.99.0/24的路由&lt;/span&gt;
+push &lt;span class=&#34;s2&#34;&gt;&amp;#34;route 192.168.99.0 255.255.255.0&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;c1&#34;&gt;# 让所有的客户端都能访问仅允许服务端访问的网站(约束白名单)&lt;/span&gt;
+push &lt;span class=&#34;s2&#34;&gt;&amp;#34;route 39.156.69.79 255.255.255.255&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;c1&#34;&gt;# 向客户端推送增加访问服务端子网的192.168.10.0/24的路由，注意服务端的IP是否是子网的网关，否则需要在子网网关处添加到达192.168.99.0的路由(客户端也是如此)&lt;/span&gt;
+push &lt;span class=&#34;s2&#34;&gt;&amp;#34;route 192.168.10.0 255.255.255.0&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;在子网网关处添加路由&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;route add -net 192.168.99.0 mask 255.255.255.0 gw 192.168.10.254 dev ens160
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;场景3-openvpn提供dhcp与dns&#34;&gt;场景3 OpenVPN提供DHCP与DNS&lt;/h3&gt;
+&lt;p&gt;OpenVPN内部提供了DHCP的服务，而不需要依赖外部的DHCP服务器。同样，也提供了DHCP服务的一些配置参数&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# openvpn服务端的配置&lt;/span&gt;
+&lt;span class=&#34;c1&#34;&gt;#定义客户端的DNS服务器地址&lt;/span&gt;
+push &lt;span class=&#34;s2&#34;&gt;&amp;#34;dhcp-option DNS 114.114.114.114&amp;#34;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 这是首选DNS&lt;/span&gt;
+push &lt;span class=&#34;s2&#34;&gt;&amp;#34;dhcp-option DNS 8.8.8.8&amp;#34;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 这是备选DNS&lt;/span&gt;
+&lt;span class=&#34;c1&#34;&gt;#定义客户端的WINS服务器地址&lt;/span&gt;
+push &lt;span class=&#34;s2&#34;&gt;&amp;#34;dhcp-options WINS 192.168.228.1&amp;#34;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 这是设置IP和主机名之间的映射与IP和域名之间的映射不同,较少使用&lt;/span&gt;
+&lt;span class=&#34;c1&#34;&gt;#让客户端发起的所有IP请求都通过OpenVPN服务器,可用于全局代理使用，启用后会出现浏览器内打不开网站等情况&lt;/span&gt;
+push &lt;span class=&#34;s2&#34;&gt;&amp;#34;redirect-gateway def1 bypass-dhcp&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;场景4-添加ldap认证&#34;&gt;场景4 添加LDAP认证&lt;/h3&gt;
+&lt;p&gt;通常情况下，OpenVPN客户端都需要通过&lt;code&gt;SSL&lt;/code&gt;连接的，因此客户端必须要有&lt;code&gt;ca&lt;/code&gt;证书，服务端可以通过设置&lt;code&gt;client-cert-not-required&lt;/code&gt;让客户端不配置证书。但是一般通过OpenLDAP认证是最方便的事情:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;安装LDAP`模块的配置&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;yum install openvpn-auth-ldap -y
+&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@vpn ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# ls -al /usr/lib64/openvpn/plugin/lib/openvpn-auth-ldap.so&lt;/span&gt;
+-rwxr-xr-x &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; root root &lt;span class=&#34;m&#34;&gt;133320&lt;/span&gt; Sep  &lt;span class=&#34;m&#34;&gt;6&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;2020&lt;/span&gt; /usr/lib64/openvpn/plugin/lib/openvpn-auth-ldap.so
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;准备ldap认证的配置文件&lt;code&gt;/etc/openvpn/auth/ldap.conf&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;mkdir -p /etc/openvpn/auth
+&lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$_&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; touch ldap.conf
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;下面是&lt;code&gt;ldap.conf&lt;/code&gt;的配置文件&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;25
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;26
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;27
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;28
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;29
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;30
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;31
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;32
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;33
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;34
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;35
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;36
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;37
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;38
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;39
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;40
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;41
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;42
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;43
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;44
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;45
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;46
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@vpn ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# cat /etc/openvpn/auth/ldap.conf&lt;/span&gt;
+&amp;lt;LDAP&amp;gt;
+	&lt;span class=&#34;c1&#34;&gt;# LDAP server URL&lt;/span&gt;
+	URL		ldap://192.168.99.130
+	&lt;span class=&#34;c1&#34;&gt;# Bind DN (If your LDAP server doesn&amp;#39;t support anonymous binds)&lt;/span&gt;
+	BindDN		&lt;span class=&#34;nv&#34;&gt;cn&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;openvpn,dc&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;openldap,dc&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;kubemaster,dc&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;top
+	Password	openvpnuserpasswd
+	&lt;span class=&#34;c1&#34;&gt;# Network timeout (in seconds)&lt;/span&gt;
+	Timeout		&lt;span class=&#34;m&#34;&gt;15&lt;/span&gt;
+	&lt;span class=&#34;c1&#34;&gt;# Enable Start TLS&lt;/span&gt;
+	&lt;span class=&#34;c1&#34;&gt;#TLSEnable	no&lt;/span&gt;
+	&lt;span class=&#34;c1&#34;&gt;# Follow LDAP Referrals (anonymously)&lt;/span&gt;
+	&lt;span class=&#34;c1&#34;&gt;#FollowReferrals no&lt;/span&gt;
+	&lt;span class=&#34;c1&#34;&gt;# TLS CA Certificate File&lt;/span&gt;
+	&lt;span class=&#34;c1&#34;&gt;#TLSCACertFile	/usr/local/etc/ssl/ca.pem&lt;/span&gt;
+	&lt;span class=&#34;c1&#34;&gt;# TLS CA Certificate Directory&lt;/span&gt;
+	&lt;span class=&#34;c1&#34;&gt;#TLSCACertDir	/etc/ssl/certs&lt;/span&gt;
+	&lt;span class=&#34;c1&#34;&gt;# Client Certificate and key&lt;/span&gt;
+	&lt;span class=&#34;c1&#34;&gt;# If TLS client authentication is required&lt;/span&gt;
+	&lt;span class=&#34;c1&#34;&gt;#TLSCertFile	/usr/local/etc/ssl/client-cert.pem&lt;/span&gt;
+	&lt;span class=&#34;c1&#34;&gt;#TLSKeyFile	/usr/local/etc/ssl/client-key.pem&lt;/span&gt;
+	&lt;span class=&#34;c1&#34;&gt;# Cipher Suite&lt;/span&gt;
+	&lt;span class=&#34;c1&#34;&gt;# The defaults are usually fine here&lt;/span&gt;
+	&lt;span class=&#34;c1&#34;&gt;# TLSCipherSuite	ALL:!ADH:@STRENGTH&lt;/span&gt;
+&amp;lt;/LDAP&amp;gt;
+
+&amp;lt;Authorization&amp;gt;
+	&lt;span class=&#34;c1&#34;&gt;# Base DN&lt;/span&gt;
+	BaseDN		&lt;span class=&#34;s2&#34;&gt;&amp;#34;ou=People,dc=openldap,dc=kubemaster,dc=top&amp;#34;&lt;/span&gt;
+	&lt;span class=&#34;c1&#34;&gt;# User Search Filter&lt;/span&gt;
+	SearchFilter	&lt;span class=&#34;s2&#34;&gt;&amp;#34;(&amp;amp;(uid=%u))&amp;#34;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# uid或者cn一般都可以，根据自己的条件&lt;/span&gt;
+
+	&lt;span class=&#34;c1&#34;&gt;# Require Group Membership&lt;/span&gt;
+	RequireGroup	&lt;span class=&#34;nb&#34;&gt;false&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 是否启用组成员关系&lt;/span&gt;
+
+	&lt;span class=&#34;c1&#34;&gt;# Add non-group members to a PF table (disabled)&lt;/span&gt;
+	&lt;span class=&#34;c1&#34;&gt;#PFTable	ips_vpn_users&lt;/span&gt;
+
+	&amp;lt;Group&amp;gt;
+		BaseDN		&lt;span class=&#34;s2&#34;&gt;&amp;#34;ou=Groups,dc=example,dc=com&amp;#34;&lt;/span&gt;
+		SearchFilter	&lt;span class=&#34;s2&#34;&gt;&amp;#34;(|(cn=developers)(cn=artists))&amp;#34;&lt;/span&gt;
+		MemberAttribute	uniqueMember
+		&lt;span class=&#34;c1&#34;&gt;# Add group members to a PF table (disabled)&lt;/span&gt;
+		&lt;span class=&#34;c1&#34;&gt;#PFTable	ips_vpn_eng&lt;/span&gt;
+	&amp;lt;/Group&amp;gt;
+&amp;lt;/Authorization&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;在完成ldap的配置之后，只需要在服务端增加以下配置即可:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;client-cert-not-required
+plugin /usr/lib64/openvpn/plugin/lib/openvpn-auth-ldap.so &lt;span class=&#34;s2&#34;&gt;&amp;#34;/etc/openvpn/auth/ldap.conf&amp;#34;&lt;/span&gt;
+username-as-common-name
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;这样就完成了基于&lt;code&gt;openldap&lt;/code&gt;认证的OpenVPN客户端的用户鉴权。&lt;/p&gt;
+&lt;h3 id=&#34;疑难杂症&#34;&gt;疑难杂症&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;VPN每隔10s左右会重新连接&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;基于密码认证的VPN出现每隔10s重新连接，说明你的账号在别的设备上进行登录了。请检查是否存在改情况并建议及时的修改密码。&lt;/p&gt;
+&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;Mac上的Tunnelblick总是处于不断认证的状态&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&#34;images.assets/image-20200620123753245.png&#34; alt=&#34;image-20200620123753245&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;出现这种情况说明你的Tunnelblick的版本太低，需要你及时的更新该软件的版本，就可以解决，&lt;a href=&#34;https://tunnelblick.net/downloads.html&#34; title=&#34;Tunnelblick Download&#34;&gt;TunnelBlick&lt;/a&gt;下载地址&lt;/p&gt;
+&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;Window上使用OpenVPN客户端连接时出现&lt;code&gt;SSL ERROR&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;出现这种问题说明你的Window上的OpenVPN客户端版本太低，需要重新下载客户端并且使用&lt;code&gt;管理员身份&lt;/code&gt;安装和启动。&lt;/p&gt;
+&lt;ol start=&#34;4&#34;&gt;
+&lt;li&gt;Window上使用OpenVPN客户端连接时出现&lt;code&gt;windows route add command failed&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;出现这种问题，属于打开VPN客户端的时候没有使用管理员身份打开，没有添加路由的权限。&lt;/p&gt;
+&lt;ol start=&#34;5&#34;&gt;
+&lt;li&gt;使用OpenVPN连接出现身份验证失败&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;出现这种问题，这是属于你的用户名或者密码填写错误，认真检查账户信息或者找相关技术负责人重新修改密码。&lt;/p&gt;
+</content:encoded>
+        <dc:creator>云原生生态圈</dc:creator>
+        <media:content url="https://linuxermaster.github.ioimages/posts/harbor-syncdata.jpg" medium="image"><media:title type="html">featured image</media:title></media:content>
+        
+        
+        
+          
+            
+              <category>openvpn</category>
+            
+          
+            
+              <category>openldap</category>
+            
+          
+            
+              <category>网络</category>
+            
+          
+        
+        
+        
+      </item>
+      
+
+    
+  </channel>
+</rss>

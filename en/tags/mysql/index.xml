@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" 
+  xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+  xmlns:dc="http://purl.org/dc/elements/1.1/" 
+  xmlns:atom="http://www.w3.org/2005/Atom" 
+  xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" 
+  xmlns:media="http://search.yahoo.com/mrss/">
+  <channel>
+    <title>mysql on 云原生生态圈</title>
+    <link>https://linuxermaster.github.io/en/tags/mysql/</link>
+    <description>Recent content in mysql on 云原生生态圈</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <managingEditor>marionxue@qq.com (Marionxue)</managingEditor>
+    <webMaster>marionxue@qq.com (Marionxue)</webMaster>
+    <copyright>[云原生生态圈](https://www.devopsman.cn) &amp;copy;2016-{year}, All Rights Reserved [转载注明出处: devopsman.cn](https://www.devopsman.cn)</copyright>
+    <lastBuildDate>Wed, 10 Jun 2020 12:00:06 +0900</lastBuildDate>
+    <sy:updatePeriod>hourly</sy:updatePeriod>
+    
+        <atom:link href="https://linuxermaster.github.io/en/tags/mysql/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+
+      
+      <item>
+        <title>Yearning目前最流行的开源数据库审核平台</title>
+        <link>https://linuxermaster.github.io/en/posts/20200625-sql%E5%AE%A1%E6%A0%B8%E5%BC%80%E6%BA%90%E7%A5%9E%E5%A5%87yearning/</link>
+        <pubDate>Wed, 10 Jun 2020 12:00:06 +0900</pubDate>
+        <author>marionxue@qq.com (Marionxue)</author>
+        <atom:modified>Wed, 10 Jun 2020 12:00:06 +0900</atom:modified>
+        <guid>https://linuxermaster.github.io/en/posts/20200625-sql%E5%AE%A1%E6%A0%B8%E5%BC%80%E6%BA%90%E7%A5%9E%E5%A5%87yearning/</guid>
+        <description>今天给大家分享目前最popular的MySQL SQL审计平台Yearning，这个平台可以帮助开发者快速的完成SQL语句的语法的审核、检测、执行和回滚等操作。在</description>
+        <content:encoded>&lt;p&gt;今天给大家分享目前最&lt;code&gt;popular&lt;/code&gt;的&lt;code&gt;MySQL SQL&lt;/code&gt;审计平台&lt;code&gt;Yearning&lt;/code&gt;，这个平台可以帮助开发者快速的完成SQL语句的语法的审核、检测、执行和回滚等操作。在早期，我们是先整理出来一套SQL使用规范，然后通过部门会议审核规范的内容，最后要求按照内容应用在实际的工作中，但是这些不免有些开发者依旧就不住或者&lt;code&gt;不上心&lt;/code&gt;，不按套路出牌，造成数据库使用不统一。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Yearning&lt;/code&gt;自身包含了一套通常适用的审核规范，基本上能满足日常需要，同时规范了日常开发需求所涉及到的SQL变动，在Yearning平台的辅助下，日常的SQL变动也更加贴近SQL使用的规范化、标准化的要求，同时&lt;code&gt;100%&lt;/code&gt;基于GO语言研发的Yearning也可以通过自定义二次开发&lt;code&gt;(遵循AGPL协议)&lt;/code&gt;增加一些符合自己审核策略，但是它的审核引擎&lt;code&gt;Juno&lt;/code&gt;不是开源的。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;images.assets/image-20200625101547637.png&#34; alt=&#34;image-20200625101547637&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Yearning的前端是基于&lt;code&gt;Vue.js&lt;/code&gt;构建的，而这块审核规则的代码也是全部在JS中传递和处理的，另外它还提供SQL语法高亮、自动补全和智能提示、可视化等。&lt;/p&gt;
+&lt;h3 id=&#34;使用感受&#34;&gt;使用感受&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;有工单记录，让变更的SQL记录落库保存，易于审计。&lt;/li&gt;
+&lt;li&gt;开发者自己提交，监测最大程度减小以往通过微信传送等粘贴出错几率，给DBA.运维省心。&lt;/li&gt;
+&lt;li&gt;再一次证明&lt;code&gt;落实规范性的东西&lt;/code&gt;需要有工具化、流程化，靠自觉万万是做不到的。&lt;/li&gt;
+&lt;li&gt;SQL审批要设置多成员多级审核，最后自己执行落库。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;下面列出支持的主要功能:&lt;/p&gt;
+&lt;h3 id=&#34;yearning-feature&#34;&gt;Yearning Feature&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;SQL查询
+&lt;ul&gt;
+&lt;li&gt;查询工单&lt;/li&gt;
+&lt;li&gt;导出&lt;/li&gt;
+&lt;li&gt;自动补全，智能提示&lt;/li&gt;
+&lt;li&gt;查询语句审计&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;SQL审核
+&lt;ul&gt;
+&lt;li&gt;流程化工单&lt;/li&gt;
+&lt;li&gt;SQL语句检测与执行&lt;/li&gt;
+&lt;li&gt;SQL回滚&lt;/li&gt;
+&lt;li&gt;历史审核记录&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;推送
+&lt;ul&gt;
+&lt;li&gt;E-mail工单推送&lt;/li&gt;
+&lt;li&gt;钉钉webhook机器人工单推送&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;用户权限及管理
+&lt;ul&gt;
+&lt;li&gt;角色划分&lt;/li&gt;
+&lt;li&gt;基于用户的细粒度权限&lt;/li&gt;
+&lt;li&gt;注册&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;其他
+&lt;ul&gt;
+&lt;li&gt;todoList&lt;/li&gt;
+&lt;li&gt;LDAP登录&lt;/li&gt;
+&lt;li&gt;动态审核规则配置&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;AutoTask自动执行&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;体验&#34;&gt;体验&lt;/h3&gt;
+&lt;p&gt;Yearning的安装十分简单，它依赖一个&lt;code&gt;mysql&lt;/code&gt;数据库用于存储工单的数据、回滚的SQL语句，所以需要先初始化数据库&lt;code&gt;-m&lt;/code&gt;，然后在启动&lt;code&gt;-s&lt;/code&gt;。对于回滚的语句不得不说一下，真的要是涉及到大变更的操作的时候，还是建议手动或者可靠地备份方式进行。官方也提供了&lt;a href=&#34;https://guide.yearning.io/install.html&#34; title=&#34;Yearning安装手册&#34;&gt;安装手册&lt;/a&gt;，一般建议容器化部署，方便省事，安装包内也有&lt;code&gt;Dockerfile&lt;/code&gt;，二次开发的同学也可以自己构建发布。&lt;/p&gt;
+&lt;p&gt;在需要配置钉钉或者微信的时候，可以通过选项设置通知时显示Yearning的平台地址&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;images.assets/15640366990306.jpg&#34; alt=&#34;img&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;下面是配置钉钉和OpenLDAP登录的参考:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;images.assets/image-20200625104229224.png&#34; alt=&#34;image-20200625104229224&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;无门槛领取DNSPOD/腾讯的域名注册5元券&lt;/p&gt;
+</content:encoded>
+        <dc:creator>云原生生态圈</dc:creator>
+        <media:content url="https://linuxermaster.github.ioimages/posts/harbor-syncdata.jpg" medium="image"><media:title type="html">featured image</media:title></media:content>
+        
+        
+        
+          
+            
+              <category>yearning</category>
+            
+          
+            
+              <category>mysql</category>
+            
+          
+            
+              <category>Database</category>
+            
+          
+        
+        
+        
+      </item>
+      
+
+    
+  </channel>
+</rss>
