@@ -6,14 +6,14 @@
   xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" 
   xmlns:media="http://search.yahoo.com/mrss/">
   <channel>
-    <title>book on CloudNativeEcosystem</title>
+    <title>book on 云原生生态圈</title>
     <link>https://linuxermaster.github.io/en/publication/book/</link>
-    <description>Recent content in book on CloudNativeEcosystem</description>
+    <description>Recent content in book on 云原生生态圈</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <managingEditor>marionxue@qq.com (Marionxue)</managingEditor>
     <webMaster>marionxue@qq.com (Marionxue)</webMaster>
-    <copyright>[云原生生态圈](https://www.devopsman.cn) &amp;copy;2016-{year}, All Rights Reserved [自由转载-非商用-非衍生-保持署名](https://www.devopsman.cn)</copyright>
+    <copyright>[云原生生态圈](https://www.devopsman.cn) &amp;copy;2016-{year}, All Rights Reserved [转载注明出处: devopsman.cn](https://www.devopsman.cn)</copyright>
     <lastBuildDate>Thu, 05 Mar 2020 14:08:48 +0000</lastBuildDate>
     <sy:updatePeriod>hourly</sy:updatePeriod>
     
