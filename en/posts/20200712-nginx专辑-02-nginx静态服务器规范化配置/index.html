@@ -1687,7 +1687,7 @@
 <div class="single__infos">
   <time class="single__info" title="Written At">📅&nbsp;Jul 12, 2020 </time>
   
-  &nbsp;&middot;&nbsp; <span class="single__info" title="Reading Time"> ☕&nbsp;2&nbsp;min read </span>
+  &nbsp;&middot;&nbsp; <span class="single__info" title="Reading Time"> ☕&nbsp;3&nbsp;min read </span>
   
   &nbsp;&middot;&nbsp; <span class="single__info" title="WRITTEN BY">🔥&nbsp;云原生生态圈</span>
   
@@ -1711,7 +1711,8 @@
     </div>
     <article class="single__contents" data-dir="ltr" data-ani="true">
       
-      <p>分享一个通过 <a href="https://nginx.org" title="Nginx网站">nginx</a> 搭建一个静态资源的 web 服务器，这里将会涉及到三个部分的内容：</p>
+      <h2 id="背景研究">背景研究</h2>
+<p>分享一个通过 <a href="https://nginx.org" title="Nginx网站">nginx</a> 搭建一个静态资源的 web 服务器，实践中将会涉及到三个部分的内容：</p>
 <ol>
 <li>静态文件服务器的配置</li>
 <li>Nginx模块之<a href="http://nginx.org/en/docs/http/ngx_http_gzip_module.html" title="Nginx-module-gzip">gzip</a></li>
@@ -1751,7 +1752,7 @@ Connection: keep-alive
 ETag: &quot;5f09c881-11&quot;
 Accept-Ranges: bytes
 </code></pre><h2 id="开启静态网站压缩">开启静态网站压缩</h2>
-<p>nginx 可以通过 gzip 模块在 http 配置段开启网站压缩传输，提高访问速度</p>
+<p>nginx可以通过一种浏览器支持且压缩不受数据损失的gzip模块将样式文件、文本文件、图片等压缩之后在用户的请求之间传输，但是对于<code>jpg、jpeg、png</code>这类本身存在压缩性质上的图片来说，压缩效果不是很明显，主要体现在文本文件的压缩上，因此对于服务的提供者来说，减少了不小的流量带宽的使用，同时也提高访问速度。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt">1
@@ -1767,6 +1768,53 @@ Accept-Ranges: bytes
 </code></pre></td></tr></table>
 </div>
 </div><p><code>gzip_comp_level</code>的压缩比设置区间为<code>0-9</code>,设置的压缩比越高，文件越小，但是对服务器CPU的消耗也就越多，一半出于这种选择压缩比为<code>6</code>。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">root@master:/webserver/nginx18/conf# curl -I http://web.devopsman.cn/test.html
+HTTP/1.1 <span class="m">200</span> OK
+Server: nginx/1.18.0
+Date: Sun, <span class="m">12</span> Jul <span class="m">2020</span> 13:45:22 GMT
+Content-Type: text/html
+Content-Length: <span class="m">20480</span>
+Last-Modified: Sun, <span class="m">12</span> Jul <span class="m">2020</span> 13:34:14 GMT
+Connection: keep-alive
+ETag: <span class="s2">&#34;5f0b1156-5000&#34;</span>
+Accept-Ranges: bytes
+
+root@master:/webserver/nginx18/conf# curl -H <span class="s2">&#34;Accept-Encoding: gzip&#34;</span> -I http://web.devopsman.cn/test.html
+HTTP/1.1 <span class="m">200</span> OK
+Server: nginx/1.18.0
+Date: Sun, <span class="m">12</span> Jul <span class="m">2020</span> 13:45:26 GMT
+Content-Type: text/html
+Last-Modified: Sun, <span class="m">12</span> Jul <span class="m">2020</span> 13:34:14 GMT
+Connection: keep-alive
+ETag: W/<span class="s2">&#34;5f0b1156-5000&#34;</span>
+Content-Encoding: gzip
+</code></pre></td></tr></table>
+</div>
+</div><p>通过以上测试的方式，既可以访问<code>gzip_types</code>中设定的类型的资源的时候，除了图片之外，应该能成功的找到<code>Content-Encoding: gzip</code>。</p>
 <h2 id="配置访问日志格式">配置访问日志格式</h2>
 <p>nginx 的日志格式，是通过 nginx 支持的环境变量将所需要的日志信息给组装在一起，在 nginx 里，除了内置的环境变量之外，还包括第三方模块的环境变量信息，比如，nginx 核心模块的支持的环境变量可以在<a href="http://nginx.org/en/docs/http/ngx_http_core_module.html#variables" title="Nignx-core Embedded Variables">Embedded Variables</a>找到，第三方支持哪些环境变量可以在对应的模块文档种找到，比如<code>realip</code>模块支持的环境变量<a href="http://nginx.org/en/docs/stream/ngx_stream_realip_module.html#variables" title="nginx-realip Embedded variables">Embedded Variables</a>，下面是是一个定义的案例，定义一个<code>main</code>类型的日志格式。</p>
 <pre><code class="language-conf" data-lang="conf">log_format main '{'
@@ -3095,6 +3143,7 @@ document.addEventListener('DOMContentLoaded', function () {
         <div class="toc toc__outer " data-dir="ltr" data-folding="true" data-ani="true">
           <nav id="TableOfContents">
   <ul>
+    <li><a href="#背景研究">背景研究</a></li>
     <li><a href="#静态文件服务器">静态文件服务器</a></li>
     <li><a href="#开启静态网站压缩">开启静态网站压缩</a></li>
     <li><a href="#配置访问日志格式">配置访问日志格式</a></li>
