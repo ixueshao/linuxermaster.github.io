@@ -14,7 +14,7 @@
     <managingEditor>marionxue@qq.com (Marionxue)</managingEditor>
     <webMaster>marionxue@qq.com (Marionxue)</webMaster>
     <copyright>[云原生生态圈](https://www.devopsman.cn) &amp;copy;2016-{year}, All Rights Reserved [转载注明出处: devopsman.cn](https://www.devopsman.cn)</copyright>
-    <lastBuildDate>Sat, 30 May 2020 12:00:06 +0900</lastBuildDate>
+    <lastBuildDate>Sun, 07 Jun 2020 12:00:06 +0900</lastBuildDate>
     <sy:updatePeriod>hourly</sy:updatePeriod>
     
         <atom:link href="https://linuxermaster.github.io/en/tags/%E5%B7%A5%E5%85%B7/index.xml" rel="self" type="application/rss+xml" />
@@ -22,6 +22,62 @@
     
     
 
+      
+      <item>
+        <title>P站风格Logo生成器</title>
+        <link>https://linuxermaster.github.io/en/posts/20200607-p%E7%AB%99%E9%A3%8E%E6%A0%BClogo%E7%94%9F%E6%88%90%E5%99%A8/</link>
+        <pubDate>Sun, 07 Jun 2020 12:00:06 +0900</pubDate>
+        <author>marionxue@qq.com (Marionxue)</author>
+        <atom:modified>Sun, 07 Jun 2020 12:00:06 +0900</atom:modified>
+        <guid>https://linuxermaster.github.io/en/posts/20200607-p%E7%AB%99%E9%A3%8E%E6%A0%BClogo%E7%94%9F%E6%88%90%E5%99%A8/</guid>
+        <description>​ 最近发现很多的微信文章上出现了一种logo设计，跟P站的logo设计风格一样让人印象深刻，黑底白字，配上一小撮橙色，给人极强的冲击力。后来查了一下在Githu</description>
+        <content:encoded>&lt;p&gt;&lt;img src=&#34;images.assets/image-20200607164436481.png&#34; alt=&#34;image-20200607164436481&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;​      最近发现很多的微信文章上出现了一种logo设计，跟P站的logo设计风格一样让人印象深刻，黑底白字，配上一小撮橙色，给人极强的冲击力。后来查了一下在Github上发现有一个有意思的程序员弄的一个在线创意Logo生成器，利用&lt;code&gt;Logoly Pro&lt;/code&gt;可以生成类似&lt;code&gt;YouTobe&lt;/code&gt;、&lt;code&gt;P站&lt;/code&gt;等Logo风格的标志。分享给大家，于是就有了今天这篇文章。&lt;/p&gt;
+&lt;h3 id=&#34;logoly的由来&#34;&gt;logoly的由来&lt;/h3&gt;
+&lt;p&gt;这个风格的制作是由&lt;code&gt;tencent&lt;/code&gt;的一位大牛开发制作的，叫做&lt;code&gt;白宦成&lt;/code&gt;,这里是他对于这个网页版工具的自述：&lt;/p&gt;
+&lt;p&gt;我自己平时经常要做一些 Side Project ，在做 Side Project 的时候，就涉及到了要做 Logo ，但是作为一个没有设计感的程序员，在做 Logo 时总是会做出一些很丑的 Logo ，于是痛定思痛，想想有没有什么有用的工具可以帮助我生成好看的 Logo。对于我来说，也不需要太过复杂，能够满足我自己的要求就行。&lt;/p&gt;
+&lt;p&gt;P站Logo风格图片素材制作的官方网站：&lt;a href=&#34;https://logoly.pro/&#34; title=&#34;logoly网站&#34;&gt;https://logoly.pro/&lt;/a&gt; 代码仓库里面是这样描述的，”一个简单的在线徽标生成器，适合想要轻松设计徽标的人们&amp;rdquo;。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;images.assets/image-20200607171024698.png&#34; alt=&#34;image-20200607171024698&#34; /&gt;&lt;/p&gt;
+&lt;h3 id=&#34;logoly的功能和特色&#34;&gt;logoly的功能和特色&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;生成P站风格的logo&lt;/li&gt;
+&lt;li&gt;支持导出&lt;code&gt;png&lt;/code&gt;格式的图片&lt;/li&gt;
+&lt;li&gt;支持修改&lt;code&gt;前缀/后缀/背景&lt;/code&gt;的颜色&lt;/li&gt;
+&lt;li&gt;支持设置字体的大小&lt;/li&gt;
+&lt;li&gt;支持自定义字体&lt;code&gt;TODO&lt;/code&gt;，可能是为了防止侵权，避免使用一些未开源的字体&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;logoly的使用方法&#34;&gt;logoly的使用方法&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;打开logoly网站: &lt;a href=&#34;https://logoly.pro/s&#34;&gt;https://logoly.pro/s&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;在文本框内输入需要的文本&lt;/li&gt;
+&lt;li&gt;修改你需要的颜色和字体的大小&lt;/li&gt;
+&lt;li&gt;点击导出即可下载&lt;code&gt;png&lt;/code&gt;格式的图片&lt;/li&gt;
+&lt;li&gt;还是不太懂得，可以看一下哔哩哔哩&lt;code&gt;B站&lt;/code&gt;上别人发的文章，或者就放弃使用吧！&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&#34;images.assets/image-20200607164549053.png&#34; alt=&#34;image-20200607164549053&#34; /&gt;&lt;/p&gt;
+</content:encoded>
+        <dc:creator>云原生生态圈</dc:creator>
+        <media:content url="https://linuxermaster.github.ioimages/posts/harbor-syncdata.jpg" medium="image"><media:title type="html">featured image</media:title></media:content>
+        
+        
+        
+          
+            
+              <category>logo</category>
+            
+          
+            
+              <category>logoly</category>
+            
+          
+            
+              <category>工具</category>
+            
+          
+        
+        
+        
+      </item>
       
       <item>
         <title>技术人员最常用的命令行工具</title>
