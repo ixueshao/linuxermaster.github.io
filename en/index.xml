@@ -206,7 +206,7 @@ Content-Encoding: gzip
 &lt;/div&gt;
 &lt;/div&gt;</content:encoded>
         <dc:creator>云原生生态圈</dc:creator>
-        <media:content url="https://linuxermaster.github.ioimages/posts/harbor-syncdata.jpg" medium="image"><media:title type="html">featured image</media:title></media:content>
+        <media:content url="https://linuxermaster.github.ioimages/posts/GZip_tutorial.png" medium="image"><media:title type="html">featured image</media:title></media:content>
         
         
         
