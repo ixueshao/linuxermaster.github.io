@@ -14,7 +14,7 @@
     <managingEditor>marionxue@qq.com (Marionxue)</managingEditor>
     <webMaster>marionxue@qq.com (Marionxue)</webMaster>
     <copyright>[云原生生态圈](https://www.devopsman.cn) &amp;copy;2016-{year}, All Rights Reserved [转载注明出处: devopsman.cn](https://www.devopsman.cn)</copyright>
-    <lastBuildDate>Sat, 11 Jul 2020 23:00:06 +0900</lastBuildDate>
+    <lastBuildDate>Sun, 12 Jul 2020 23:00:06 +0900</lastBuildDate>
     <sy:updatePeriod>hourly</sy:updatePeriod>
     
         <atom:link href="https://linuxermaster.github.io/en/tags/index.xml" rel="self" type="application/rss+xml" />
@@ -24,12 +24,48 @@
 
       
       <item>
+        <title>gzip</title>
+        <link>https://linuxermaster.github.io/en/tags/gzip/</link>
+        <pubDate>Sun, 12 Jul 2020 23:00:06 +0900</pubDate>
+        <author>marionxue@qq.com (Marionxue)</author>
+        
+        <guid>https://linuxermaster.github.io/en/tags/gzip/</guid>
+        <description></description>
+        <content:encoded></content:encoded>
+        <dc:creator>Marionxue</dc:creator>
+        
+        
+        
+        
+        
+        
+      </item>
+      
+      <item>
         <title>Nginx</title>
         <link>https://linuxermaster.github.io/en/tags/nginx/</link>
-        <pubDate>Sat, 11 Jul 2020 23:00:06 +0900</pubDate>
+        <pubDate>Sun, 12 Jul 2020 23:00:06 +0900</pubDate>
         <author>marionxue@qq.com (Marionxue)</author>
         
         <guid>https://linuxermaster.github.io/en/tags/nginx/</guid>
+        <description></description>
+        <content:encoded></content:encoded>
+        <dc:creator>Marionxue</dc:creator>
+        
+        
+        
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>日志规范</title>
+        <link>https://linuxermaster.github.io/en/tags/%E6%97%A5%E5%BF%97%E8%A7%84%E8%8C%83/</link>
+        <pubDate>Sun, 12 Jul 2020 23:00:06 +0900</pubDate>
+        <author>marionxue@qq.com (Marionxue)</author>
+        
+        <guid>https://linuxermaster.github.io/en/tags/%E6%97%A5%E5%BF%97%E8%A7%84%E8%8C%83/</guid>
         <description></description>
         <content:encoded></content:encoded>
         <dc:creator>Marionxue</dc:creator>

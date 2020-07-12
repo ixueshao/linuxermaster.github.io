@@ -14,7 +14,7 @@
     <managingEditor>marionxue@qq.com (Marionxue)</managingEditor>
     <webMaster>marionxue@qq.com (Marionxue)</webMaster>
     <copyright>[云原生生态圈](https://www.devopsman.cn) &amp;copy;2016-{year}, All Rights Reserved [转载注明出处: devopsman.cn](https://www.devopsman.cn)</copyright>
-    <lastBuildDate>Sat, 11 Jul 2020 23:00:06 +0900</lastBuildDate>
+    <lastBuildDate>Sun, 12 Jul 2020 23:00:06 +0900</lastBuildDate>
     <sy:updatePeriod>hourly</sy:updatePeriod>
     
         <atom:link href="https://linuxermaster.github.io/en/tags/nginx/index.xml" rel="self" type="application/rss+xml" />
@@ -22,6 +22,142 @@
     
     
 
+      
+      <item>
+        <title>Nginx专辑-02 Nginx静态服务器规范化配置</title>
+        <link>https://linuxermaster.github.io/en/posts/20200712-nginx%E4%B8%93%E8%BE%91-02-nginx%E9%9D%99%E6%80%81%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%A7%84%E8%8C%83%E5%8C%96%E9%85%8D%E7%BD%AE/</link>
+        <pubDate>Sun, 12 Jul 2020 23:00:06 +0900</pubDate>
+        <author>marionxue@qq.com (Marionxue)</author>
+        <atom:modified>Sun, 12 Jul 2020 23:00:06 +0900</atom:modified>
+        <guid>https://linuxermaster.github.io/en/posts/20200712-nginx%E4%B8%93%E8%BE%91-02-nginx%E9%9D%99%E6%80%81%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%A7%84%E8%8C%83%E5%8C%96%E9%85%8D%E7%BD%AE/</guid>
+        <description>分享一个通过 nginx 搭建一个静态资源的 web 服务器，这里将会涉及到三个部分的内容： 静态文件服务器的配置 Nginx模块之gzip 自定义访问日志的格式: Embedded Variables 静态文件服务器 简单</description>
+        <content:encoded>&lt;p&gt;分享一个通过 &lt;a href=&#34;https://nginx.org&#34; title=&#34;Nginx网站&#34;&gt;nginx&lt;/a&gt; 搭建一个静态资源的 web 服务器，这里将会涉及到三个部分的内容：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;静态文件服务器的配置&lt;/li&gt;
+&lt;li&gt;Nginx模块之&lt;a href=&#34;http://nginx.org/en/docs/http/ngx_http_gzip_module.html&#34; title=&#34;Nginx-module-gzip&#34;&gt;gzip&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;自定义访问日志的格式: &lt;code&gt;Embedded Variables&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;静态文件服务器&#34;&gt;静态文件服务器&lt;/h2&gt;
+&lt;p&gt;简单的就通过一个自定义的&lt;code&gt;index.html&lt;/code&gt;文件当做一个静态页面Demo，下面准备一下静态文件资源存储的位置。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;mkdir /webserver/nginx18/ops/
+&lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;云原生生态圈&amp;#34;&lt;/span&gt; &amp;gt; /webserver/nginx18/ops/index.html
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;增加nginx配置文件，在&lt;code&gt;/webserver/nginx18/conf/nginx.conf&lt;/code&gt;里增加一个 server 配置段，然后通过 alias 映射到虚拟目录。注意访问时 location 中的&lt;code&gt;/&lt;/code&gt;对应的是 ops 后面的&lt;code&gt;/&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-conf&#34; data-lang=&#34;conf&#34;&gt;server {
+     listen      80;
+     server_name web.devopsman.cn;
+     location / {
+        alias ops/;
+     }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;测试访问:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-bashj&#34; data-lang=&#34;bashj&#34;&gt;☸️  k8sdev🔥 default  ~  🐳 👉 curl web.devopsman.cn
+静态网站demo
+☸️  k8sdev🔥 default  ~  🐳 👉 curl -I web.devopsman.cn
+HTTP/1.1 200 OK
+Server: nginx/1.18.0
+Date: Sat, 11 Jul 2020 14:11:46 GMT
+Content-Type: text/html
+Content-Length: 17
+Last-Modified: Sat, 11 Jul 2020 14:11:13 GMT
+Connection: keep-alive
+ETag: &amp;quot;5f09c881-11&amp;quot;
+Accept-Ranges: bytes
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;开启静态网站压缩&#34;&gt;开启静态网站压缩&lt;/h2&gt;
+&lt;p&gt;nginx 可以通过 gzip 模块在 http 配置段开启网站压缩传输，提高访问速度&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;  gzip  on&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+  gzip_min_length 1&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 表示小于1k不压缩&lt;/span&gt;
+  gzip_comp_level 2&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 设置压缩的级别&lt;/span&gt;
+  gzip_types text_plain application/x-javascript text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;# 启用压缩类型的文件&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;gzip_comp_level&lt;/code&gt;的压缩比设置区间为&lt;code&gt;0-9&lt;/code&gt;,设置的压缩比越高，文件越小，但是对服务器CPU的消耗也就越多，一半出于这种选择压缩比为&lt;code&gt;6&lt;/code&gt;。&lt;/p&gt;
+&lt;h2 id=&#34;配置访问日志格式&#34;&gt;配置访问日志格式&lt;/h2&gt;
+&lt;p&gt;nginx 的日志格式，是通过 nginx 支持的环境变量将所需要的日志信息给组装在一起，在 nginx 里，除了内置的环境变量之外，还包括第三方模块的环境变量信息，比如，nginx 核心模块的支持的环境变量可以在&lt;a href=&#34;http://nginx.org/en/docs/http/ngx_http_core_module.html#variables&#34; title=&#34;Nignx-core Embedded Variables&#34;&gt;Embedded Variables&lt;/a&gt;找到，第三方支持哪些环境变量可以在对应的模块文档种找到，比如&lt;code&gt;realip&lt;/code&gt;模块支持的环境变量&lt;a href=&#34;http://nginx.org/en/docs/stream/ngx_stream_realip_module.html#variables&#34; title=&#34;nginx-realip Embedded variables&#34;&gt;Embedded Variables&lt;/a&gt;，下面是是一个定义的案例，定义一个&lt;code&gt;main&lt;/code&gt;类型的日志格式。&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-conf&#34; data-lang=&#34;conf&#34;&gt;log_format main &#39;{&#39;
+  &#39;&amp;quot;@timestamp&amp;quot;:&amp;quot;$time_iso8601&amp;quot;,&#39;
+  &#39;&amp;quot;connection&amp;quot;:&amp;quot;$connection&amp;quot;,&#39;
+  &#39;&amp;quot;connection_requests&amp;quot;:&amp;quot;$connection_requests&amp;quot;,&#39;
+  &#39;&amp;quot;request&amp;quot;:&amp;quot;$request&amp;quot;,&#39;
+  &#39;&amp;quot;request_time&amp;quot;:&amp;quot;$request_time&amp;quot;,&#39;
+  &#39;&amp;quot;request_length&amp;quot;:&amp;quot;$request_length&amp;quot;,&#39;
+  &#39;&amp;quot;request_uri&amp;quot;:&amp;quot;$request_uri&amp;quot;,&#39;
+  &#39;&amp;quot;request_method&amp;quot;:&amp;quot;$request_method&amp;quot;,&#39;
+  &#39;&amp;quot;server_name&amp;quot;:&amp;quot;$server_name&amp;quot;,&#39;
+  &#39;&amp;quot;status&amp;quot;:&amp;quot;$status&amp;quot;,&#39;
+  &#39;&amp;quot;remote_user&amp;quot;:&amp;quot;$remote_user&amp;quot;,&#39;
+  &#39;&amp;quot;remote_addr&amp;quot;:&amp;quot;$remote_addr&amp;quot;,&#39;
+  &#39;&amp;quot;time_local&amp;quot;:&amp;quot;$time_local&amp;quot;,&#39;
+  &#39;&amp;quot;body_bytes_sent&amp;quot;:&amp;quot;$body_bytes_sent&amp;quot;,&#39;
+  &#39;&amp;quot;bytes_sent&amp;quot;:&amp;quot;$bytes_sent&amp;quot;,&#39;
+  &#39;&amp;quot;msec&amp;quot;:&amp;quot;$msec&amp;quot;,&#39;
+  &#39;&amp;quot;upstream_status&amp;quot;:&amp;quot;$upstream_status&amp;quot;,&#39;
+  &#39;&amp;quot;upstream_addr&amp;quot;:&amp;quot;$upstream_addr&amp;quot;,&#39;
+  &#39;&amp;quot;upstream_response_time&amp;quot;:&amp;quot;$upstream_response_time&amp;quot;,&#39;
+  &#39;&amp;quot;http_sessionKey&amp;quot;:&amp;quot;$http_sessionKey&amp;quot;,&#39;
+  &#39;&amp;quot;cookie_sk&amp;quot;:&amp;quot;$cookie_sk&amp;quot;,&#39;
+  &#39;&amp;quot;http_referer&amp;quot;:&amp;quot;$http_referer&amp;quot;,&#39;
+  &#39;&amp;quot;http_user_agent&amp;quot;:&amp;quot;$http_user_agent&amp;quot;,&#39;
+  &#39;&amp;quot;http_x_forwarded_for&amp;quot;:&amp;quot;$http_x_forwarded_for&amp;quot;&#39;
+  &#39;}&#39;;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;在定义好日志格式之后，通过&lt;code&gt;access_log&lt;/code&gt;指令配置日志的存储路径，在配置完日志之后，&lt;code&gt;reload&lt;/code&gt;一下就可自动创建日志文件，以上的环境变量含义都可以在官网上找到准确的释义:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;access_log  logs/web.devopsman.cn.access.log  main&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;此时，发送一个 http 的请求，就会按照日志的格式记录日志写入到日志文件中:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@master:/webserver/nginx18/logs# tail -f web.devopsman.cn.access.log
+&lt;span class=&#34;o&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;@timestamp&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;2020-07-11T10:26:55-04:00&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;connection&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;17&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;connection_requests&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;1&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;request&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;HEAD / HTTP/1.1&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;request_time&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;0.000&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;request_length&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;81&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;request_uri&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;/&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;request_method&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;HEAD&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;server_name&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;web.devopsman.cn&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;status&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;200&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;remote_user&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;-&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;remote_addr&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;192.168.99.1&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;time_local&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;11/Jul/2020:10:26:55 -0400&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;body_bytes_sent&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;0&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;bytes_sent&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;236&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;msec&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;1594477615.080&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;upstream_status&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;-&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;upstream_addr&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;-&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;upstream_response_time&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;-&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;http_sessionKey&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;-&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;cookie_sk&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;-&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;http_referer&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;-&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;http_user_agent&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;curl/7.64.1&amp;#34;&lt;/span&gt;,&lt;span class=&#34;s2&#34;&gt;&amp;#34;http_x_forwarded_for&amp;#34;&lt;/span&gt;:&lt;span class=&#34;s2&#34;&gt;&amp;#34;-&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;</content:encoded>
+        <dc:creator>云原生生态圈</dc:creator>
+        <media:content url="https://linuxermaster.github.ioimages/posts/harbor-syncdata.jpg" medium="image"><media:title type="html">featured image</media:title></media:content>
+        
+        
+        
+          
+            
+              <category>Nginx</category>
+            
+          
+            
+              <category>gzip</category>
+            
+          
+            
+              <category>日志规范</category>
+            
+          
+        
+        
+        
+      </item>
       
       <item>
         <title>Nginx专辑- 01 Nginx1.18编译安装</title>
