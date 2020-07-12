@@ -1767,7 +1767,7 @@ Accept-Ranges: bytes
   gzip_types text_plain application/x-javascript text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png<span class="p">;</span>  <span class="c1"># 启用压缩类型的文件</span>
 </code></pre></td></tr></table>
 </div>
-</div><p><code>gzip_comp_level</code>的压缩比设置区间为<code>0-9</code>,设置的压缩比越高，文件越小，但是对服务器CPU的消耗也就越多，一半出于这种选择压缩比为<code>6</code>。</p>
+</div><p><code>gzip_comp_level</code>的压缩比设置区间为<code>0-9</code>,设置的压缩比越高，文件越小，但是对服务器CPU的消耗也就越多，一般出于这种选择压缩比为<code>6</code>。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt"> 1
@@ -1816,7 +1816,7 @@ Content-Encoding: gzip
 </div>
 </div><p>通过以上测试的方式，既可以访问<code>gzip_types</code>中设定的类型的资源的时候，除了图片之外，应该能成功的找到<code>Content-Encoding: gzip</code>。</p>
 <h2 id="配置访问日志格式">配置访问日志格式</h2>
-<p>nginx 的日志格式，是通过 nginx 支持的环境变量将所需要的日志信息给组装在一起，在 nginx 里，除了内置的环境变量之外，还包括第三方模块的环境变量信息，比如，nginx 核心模块的支持的环境变量可以在<a href="http://nginx.org/en/docs/http/ngx_http_core_module.html#variables" title="Nignx-core Embedded Variables">Embedded Variables</a>找到，第三方支持哪些环境变量可以在对应的模块文档种找到，比如<code>realip</code>模块支持的环境变量<a href="http://nginx.org/en/docs/stream/ngx_stream_realip_module.html#variables" title="nginx-realip Embedded variables">Embedded Variables</a>，下面是是一个定义的案例，定义一个<code>main</code>类型的日志格式。</p>
+<p>nginx 的日志格式，是通过 nginx 支持的环境变量将所需要的日志信息给组装在一起，在 nginx 里，除了内置的环境变量之外，还包括第三方模块的环境变量信息，比如，nginx 核心模块的支持的环境变量可以在<a href="http://nginx.org/en/docs/http/ngx_http_core_module.html#variables" title="Nignx-core Embedded Variables">Embedded Variables</a>找到，第三方支持哪些环境变量可以在对应的模块文档中找到，比如<code>realip</code>模块支持的环境变量<a href="http://nginx.org/en/docs/stream/ngx_stream_realip_module.html#variables" title="nginx-realip Embedded variables">Embedded Variables</a>，下面是是一个定义的案例，定义一个<code>main</code>类型的日志格式。</p>
 <pre><code class="language-conf" data-lang="conf">log_format main '{'
   '&quot;@timestamp&quot;:&quot;$time_iso8601&quot;,'
   '&quot;connection&quot;:&quot;$connection&quot;,'

@@ -108,7 +108,7 @@ Accept-Ranges: bytes
   gzip_types text_plain application/x-javascript text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;# 启用压缩类型的文件&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;code&gt;gzip_comp_level&lt;/code&gt;的压缩比设置区间为&lt;code&gt;0-9&lt;/code&gt;,设置的压缩比越高，文件越小，但是对服务器CPU的消耗也就越多，一半出于这种选择压缩比为&lt;code&gt;6&lt;/code&gt;。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;gzip_comp_level&lt;/code&gt;的压缩比设置区间为&lt;code&gt;0-9&lt;/code&gt;,设置的压缩比越高，文件越小，但是对服务器CPU的消耗也就越多，一般出于这种选择压缩比为&lt;code&gt;6&lt;/code&gt;。&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
@@ -157,7 +157,7 @@ Content-Encoding: gzip
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;通过以上测试的方式，既可以访问&lt;code&gt;gzip_types&lt;/code&gt;中设定的类型的资源的时候，除了图片之外，应该能成功的找到&lt;code&gt;Content-Encoding: gzip&lt;/code&gt;。&lt;/p&gt;
 &lt;h2 id=&#34;配置访问日志格式&#34;&gt;配置访问日志格式&lt;/h2&gt;
-&lt;p&gt;nginx 的日志格式，是通过 nginx 支持的环境变量将所需要的日志信息给组装在一起，在 nginx 里，除了内置的环境变量之外，还包括第三方模块的环境变量信息，比如，nginx 核心模块的支持的环境变量可以在&lt;a href=&#34;http://nginx.org/en/docs/http/ngx_http_core_module.html#variables&#34; title=&#34;Nignx-core Embedded Variables&#34;&gt;Embedded Variables&lt;/a&gt;找到，第三方支持哪些环境变量可以在对应的模块文档种找到，比如&lt;code&gt;realip&lt;/code&gt;模块支持的环境变量&lt;a href=&#34;http://nginx.org/en/docs/stream/ngx_stream_realip_module.html#variables&#34; title=&#34;nginx-realip Embedded variables&#34;&gt;Embedded Variables&lt;/a&gt;，下面是是一个定义的案例，定义一个&lt;code&gt;main&lt;/code&gt;类型的日志格式。&lt;/p&gt;
+&lt;p&gt;nginx 的日志格式，是通过 nginx 支持的环境变量将所需要的日志信息给组装在一起，在 nginx 里，除了内置的环境变量之外，还包括第三方模块的环境变量信息，比如，nginx 核心模块的支持的环境变量可以在&lt;a href=&#34;http://nginx.org/en/docs/http/ngx_http_core_module.html#variables&#34; title=&#34;Nignx-core Embedded Variables&#34;&gt;Embedded Variables&lt;/a&gt;找到，第三方支持哪些环境变量可以在对应的模块文档中找到，比如&lt;code&gt;realip&lt;/code&gt;模块支持的环境变量&lt;a href=&#34;http://nginx.org/en/docs/stream/ngx_stream_realip_module.html#variables&#34; title=&#34;nginx-realip Embedded variables&#34;&gt;Embedded Variables&lt;/a&gt;，下面是是一个定义的案例，定义一个&lt;code&gt;main&lt;/code&gt;类型的日志格式。&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-conf&#34; data-lang=&#34;conf&#34;&gt;log_format main &#39;{&#39;
   &#39;&amp;quot;@timestamp&amp;quot;:&amp;quot;$time_iso8601&amp;quot;,&#39;
   &#39;&amp;quot;connection&amp;quot;:&amp;quot;$connection&amp;quot;,&#39;
