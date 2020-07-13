@@ -208,6 +208,121 @@ Content-Encoding: gzip
       </item>
       
       <item>
+        <title>Nginx专辑-03 Nginx之缓存代理模块的使用</title>
+        <link>https://linuxermaster.github.io/en/posts/20200713-nginx%E4%B8%93%E8%BE%91-03-nginx%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA%E7%BC%93%E5%AD%98%E6%9C%8D%E5%8A%A1%E5%99%A8/</link>
+        <pubDate>Sun, 12 Jul 2020 23:00:06 +0900</pubDate>
+        <author>marionxue@qq.com (Marionxue)</author>
+        <atom:modified>Sun, 12 Jul 2020 23:00:06 +0900</atom:modified>
+        <guid>https://linuxermaster.github.io/en/posts/20200713-nginx%E4%B8%93%E8%BE%91-03-nginx%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA%E7%BC%93%E5%AD%98%E6%9C%8D%E5%8A%A1%E5%99%A8/</guid>
+        <description>缓存服务器场景 配置一个缓存服务器，带来的优缺点，可以根据不同的场景适当选择： 当上游upstream端的服务器的响应内容发生了变化的时候，缓存服务器响应的内容在失</description>
+        <content:encoded>&lt;h2 id=&#34;缓存服务器场景&#34;&gt;缓存服务器场景&lt;/h2&gt;
+&lt;p&gt;配置一个缓存服务器，带来的优缺点，可以根据不同的场景适当选择：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;当上游&lt;code&gt;upstream&lt;/code&gt;端的服务器的响应内容发生了变化的时候，缓存服务器响应的内容在失效时间之前是不会变化的，因此要确认是否适用当前的场景&lt;/li&gt;
+&lt;li&gt;配置缓存代理服务器，可以提高网站的访问性能&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;配置实践&#34;&gt;配置实践&lt;/h2&gt;
+&lt;p&gt;在&lt;code&gt;http&lt;/code&gt;段配置缓存的相关参数，如缓存的存储位置、缓存级别、缓存空间、缓存存储最大多少，缓存有效时常&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# http&lt;/span&gt;
+proxy_cache_path /tmp/nginxcache &lt;span class=&#34;nv&#34;&gt;levels&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;1:2 &lt;span class=&#34;nv&#34;&gt;keys_zone&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;my_cache:10m &lt;span class=&#34;nv&#34;&gt;max_size&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;10g &lt;span class=&#34;nv&#34;&gt;inactive&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;60m &lt;span class=&#34;nv&#34;&gt;use_temp_path&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;off&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;配置缓存服务器&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-conf&#34; data-lang=&#34;conf&#34;&gt;upstream local {
+	server 127.0.0.1:8089;
+}
+server {
+	server_name proxy.devopsman.cn;
+	listen 80;
+	location / {
+		proxy_set_header Host $host;
+		proxy_set_header X-Real_IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;;
+		proxy_cache my_cache;
+		proxy_cache_key $host$uri$is_args$args;
+		proxy_cache_valid 200 304 302 1d;
+		proxy_pass http://local;
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;然后重载nginx之后，nginx就会自动的生成对应缓存目录&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;nginx -s reload
+root@master:/tmp# ls -alh &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt;grep nginx
+drwx------  &lt;span class=&#34;m&#34;&gt;9&lt;/span&gt; www  root 4.0K Jul &lt;span class=&#34;m&#34;&gt;12&lt;/span&gt; 06:07 nginxcache
+root@master:/tmp# tree ./nginxcache/
+./nginxcache/
+├── &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;
+│   └── 7d
+├── &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;
+│   └── &lt;span class=&#34;m&#34;&gt;54&lt;/span&gt;
+├── &lt;span class=&#34;m&#34;&gt;4&lt;/span&gt;
+│   ├── &lt;span class=&#34;m&#34;&gt;38&lt;/span&gt;
+│   └── &lt;span class=&#34;m&#34;&gt;92&lt;/span&gt;
+├── &lt;span class=&#34;m&#34;&gt;6&lt;/span&gt;
+│   └── &lt;span class=&#34;m&#34;&gt;27&lt;/span&gt;
+├── a
+│   └── &lt;span class=&#34;m&#34;&gt;39&lt;/span&gt;
+├── b
+│   └── 2b
+└── f
+    └── c4
+
+&lt;span class=&#34;m&#34;&gt;15&lt;/span&gt; directories, &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; files
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;当我们对&lt;code&gt;proxy.devopsman.cn&lt;/code&gt;发起新的资源请求，资源就会被缓存在该目录下。当我们把&lt;code&gt;127.0.0.1:8089&lt;/code&gt;服务给停掉之后，访问之前访问过的资源依旧可以正常的获取，因为影响的数据是从缓存中直接返回的。&lt;/p&gt;
+</content:encoded>
+        <dc:creator>云原生生态圈</dc:creator>
+        <media:content url="https://linuxermaster.github.ioimages/posts/GZip_tutorial.png" medium="image"><media:title type="html">featured image</media:title></media:content>
+        
+        
+        
+          
+            
+              <category>Nginx</category>
+            
+          
+            
+              <category>缓存代理服务器</category>
+            
+          
+        
+        
+        
+      </item>
+      
+      <item>
         <title>Nginx专辑- 01 Nginx1.18编译安装</title>
         <link>https://linuxermaster.github.io/en/posts/20200711-nginx%E4%B8%93%E8%BE%91-01-nginx1.18%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85/</link>
         <pubDate>Sat, 11 Jul 2020 23:00:06 +0900</pubDate>
@@ -4885,6 +5000,91 @@ perl flamegraph.pl perf.folded &amp;gt;perf.svg
         <description></description>
         <content:encoded>&lt;p&gt;&lt;img src=&#34;./images.assets/image-20200711231614513.png&#34; alt=&#34;image-20200711231614513&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;./images.assets/image-20200711231729536.png&#34; alt=&#34;image-20200711231729536&#34; /&gt;&lt;/p&gt;
+</content:encoded>
+        <dc:creator>Marionxue</dc:creator>
+        
+        
+        
+        
+        
+        
+      </item>
+      
+      <item>
+        <title></title>
+        <link>https://linuxermaster.github.io/en/posts/20200713-goaccess%E5%AE%9E%E6%97%B6%E5%88%86%E6%9E%90%E7%BB%98%E5%88%B6%E8%AE%BF%E9%97%AE%E6%97%A5%E5%BF%97%E9%9D%A2%E6%9D%BF/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        <author>marionxue@qq.com (Marionxue)</author>
+        
+        <guid>https://linuxermaster.github.io/en/posts/20200713-goaccess%E5%AE%9E%E6%97%B6%E5%88%86%E6%9E%90%E7%BB%98%E5%88%B6%E8%AE%BF%E9%97%AE%E6%97%A5%E5%BF%97%E9%9D%A2%E6%9D%BF/</guid>
+        <description>场景 实践说明 安装goaccess仅有需要依赖的ncurses库 1 sudo apt-get install libncursesw5-dev 当需要把Nginx访问日志中的geoip给统计导入到新的文件中时，需要GeoIP库的支持</description>
+        <content:encoded>&lt;h2 id=&#34;场景&#34;&gt;场景&lt;/h2&gt;
+&lt;h2 id=&#34;实践说明&#34;&gt;实践说明&lt;/h2&gt;
+&lt;p&gt;安装goaccess仅有需要依赖的ncurses库&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;sudo apt-get install libncursesw5-dev
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;当需要把Nginx访问日志中的geoip给统计导入到新的文件中时，需要GeoIP库的支持&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;$ wget https://github.com/maxmind/geoip-api-c/releases/download/v1.6.11/GeoIP-1.6.11.tar.gz
+$ tar -xzvf GeoIP-1.6.11.tar.gz
+$ &lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; GeoIP-1.6.11
+$ ./configure
+$ make
+$ make install
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;完成Goaccess依赖的环境之后，开始构建goacess工具&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;wget http://tar.goaccess.io/goaccess-1.2.tar.gz
+tar xf goaccess-1.2.tar.gz &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; goaccess-1.2/
+./configure --enable-utf8 --enable-geoip&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;legacy
+make &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; make install
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;</content:encoded>
+        <dc:creator>Marionxue</dc:creator>
+        
+        
+        
+        
+        
+        
+      </item>
+      
+      <item>
+        <title></title>
+        <link>https://linuxermaster.github.io/en/posts/20200713-%E5%B8%B8%E8%A7%81%E7%9A%84%E9%9B%86%E4%B8%AD%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        <author>marionxue@qq.com (Marionxue)</author>
+        
+        <guid>https://linuxermaster.github.io/en/posts/20200713-%E5%B8%B8%E8%A7%81%E7%9A%84%E9%9B%86%E4%B8%AD%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/</guid>
+        <description>使用opencv与python进行图像哈希</description>
+        <content:encoded>&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.pyimagesearch.com/2017/11/27/image-hashing-opencv-python/&#34;&gt;使用opencv与python进行图像哈希&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;/li&gt;
+&lt;/ul&gt;
 </content:encoded>
         <dc:creator>Marionxue</dc:creator>
         
@@ -9974,59 +10174,6 @@ nginx -s reopen
 &lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;</content:encoded>
-        <dc:creator>Marionxue</dc:creator>
-        
-        
-        
-        
-        
-        
-      </item>
-      
-      <item>
-        <title></title>
-        <link>https://linuxermaster.github.io/en/posts/nginx%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97%E4%B8%93%E8%BE%91/05-nginx%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA%E7%BC%93%E5%AD%98%E6%9C%8D%E5%8A%A1%E5%99%A8/</link>
-        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-        <author>marionxue@qq.com (Marionxue)</author>
-        
-        <guid>https://linuxermaster.github.io/en/posts/nginx%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97%E4%B8%93%E8%BE%91/05-nginx%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA%E7%BC%93%E5%AD%98%E6%9C%8D%E5%8A%A1%E5%99%A8/</guid>
-        <description>缓存服务器场景 配置一个缓存服务器，带来的优缺点，可以根据不同的场景适当选择： 当上游upstream端的服务器的响应内容发生了变化的时候，缓存服务器响应的内容在失</description>
-        <content:encoded>&lt;h2 id=&#34;缓存服务器场景&#34;&gt;缓存服务器场景&lt;/h2&gt;
-&lt;p&gt;配置一个缓存服务器，带来的优缺点，可以根据不同的场景适当选择：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;当上游&lt;code&gt;upstream&lt;/code&gt;端的服务器的响应内容发生了变化的时候，缓存服务器响应的内容在失效时间之前是不会变化的，因此要确认是否适用当前的场景&lt;/li&gt;
-&lt;li&gt;配置缓存代理服务器，可以提高网站的访问性能&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h2 id=&#34;配置实践&#34;&gt;配置实践&lt;/h2&gt;
-&lt;p&gt;在&lt;code&gt;http&lt;/code&gt;段配置缓存的相关参数，如缓存的存储位置、缓存级别、缓存空间、缓存存储最大多少，缓存有效时常&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# http&lt;/span&gt;
-proxy_cache_path /tmp/nginxcache &lt;span class=&#34;nv&#34;&gt;levels&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;1:2 &lt;span class=&#34;nv&#34;&gt;keys_zone&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;my_cache:10m &lt;span class=&#34;nv&#34;&gt;max_size&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;10g &lt;span class=&#34;nv&#34;&gt;inactive&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;60m &lt;span class=&#34;nv&#34;&gt;use_temp_path&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;off&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;配置缓存服务器&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&#34;language-conf&#34; data-lang=&#34;conf&#34;&gt;upstream local {
-	server 127.0.0.1:8089;
-}
-server {
-	server_name proxy.devopsman.cn;
-	listen 80;
-	location / {
-		proxy_set_header Host $host;
-		proxy_set_header X-Real_IP $remote_addr;
-		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;;
-		proxy_cache my_cache;
-		proxy_cache_key $host$uri$is_args$args;
-		proxy_cache_valid 200 304 302 1d;
-		proxy_pass http://local;
-	}
-}
-&lt;/code&gt;&lt;/pre&gt;</content:encoded>
         <dc:creator>Marionxue</dc:creator>
         
         
